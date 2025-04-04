@@ -6,7 +6,7 @@ class FilmDemarrageSpider(scrapy.Spider):
     start_urls = ["https://www.jpbox-office.com/fichfilm.php?id=10042"]
 
     def parse(self, response):
-        budget =
+        budget = response.css('table.tablesmall tr:first-child td:last-child div strong::text').get()
         # Extract "Démarrage"
         demarrage = response.css("td:nth-child(3) table.tablesmall.tablesmall1b tr:nth-child(2) td:nth-child(2) div::text").get()
         if demarrage:
@@ -14,6 +14,6 @@ class FilmDemarrageSpider(scrapy.Spider):
 
         # Return extracted data
         yield {
-            'url': response.url,
+            'budget': budget,
             'demarrage': demarrage,
         }
