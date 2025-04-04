@@ -1,0 +1,31 @@
+rang,titre,titre_vo,realisateur,genre,annee,pays,entrees,salles,moy_salle,part_marche,affiche
+1,Bienvenue chez les Ch'tis,Réalisé par :,Comédie,Bienvenue chez les Ch'tis,2008,f25,4378720,793,5522,21  %,cinema/images/posters/np_10042.jpg
+2,Les Bronzés 3: Amis pour la vie,Réalisé par :,Comédie,Les Bronzés 3: Amis pour la vie,2006,f25,3906694,950,4112,38  %,cinema/images/posters/bronzes3.jpg
+3,Star Wars: Le Réveil de la Force,Star Wars: The Force Awakens,Fantasy,Star Wars: Le Réveil de la Force,2015,f23,3801235,1093,3478,36  %,cinema/images/posters/13345-20230308062242.jpg
+4,Astérix et Obélix: Mission Cléopatre,Réalisé par :,Comédie,Astérix et Obélix: Mission Cléopatre,2002,f25,3685097,945,3900,25  %,cinema/images/posters/asterixcleopatre.jpg
+5,Taxi 2,Réalisé par :,Comédie,Taxi 2,2000,f25,3478850,831,4186,34  %,cinema/images/posters/taxi2.jpg
+6,Avengers: Endgame,Réalisé par :,Comicbook,Avengers: Endgame,2019,f23,3426471,633,5413,49  %,cinema/images/posters/15189-20190317125524-0.jpg
+7,La Revanche des Sith,Revenge of the Sith,Fantasy,La Revanche des Sith,2005,f23,3303005,938,3521,46  %,cinema/images/posters/revengesith.jpg
+8,Le Roi Lion (2019),The Lion King (2019),Aventure - Action,Le Roi Lion (2019),2019,f23,3252896,680,4784,32  %,cinema/images/posters/17528-20190713012150-0.jpg
+9,Les Aventures de Tintin : Le secret de la Licorne,The Adventures of Tintin: Secret of the Unicorn,Aventure - Action,Les Aventures de Tintin : Le secret de la Licorne,2011,f23,3158313,850,3716,59  %,cinema/images/posters/10845-20110827120831.jpg
+10,Harry Potter et les reliques de la mort - partie 2,Harry Potter and the Deathly Hallows: Part II,Fantasy,Harry Potter et les reliques de la mort - partie 2,2011,f23,3129485,812,3854,48  %,cinema/images/posters/10193-20110702040722.jpg
+11,Harry Potter et la coupe de feu,Harry Potter and the Goblet of Fire,Fantasy,Harry Potter et la coupe de feu,2005,f23,3088796,950,3251,40  %,cinema/images/posters/harrypotter4.jpg
+12,Asterix aux Jeux Olympiques,,,Asterix aux Jeux Olympiques,2008,f25,3007811,1078,2790,44  %,cinema/images/posters/np_3.jpg
+13,Harry Potter et le Prince de sang-mêlé,Harry Potter and the Half-Blood Prince,Fantasy,Harry Potter et le Prince de sang-mêlé,2009,f23,2882397,949,3037,48  %,cinema/images/posters/12-20140126072615-2.jpg
+14,Spider-Man: No Way Home,Réalisé par :,Comicbook,Spider-Man: No Way Home,2021,f23,2867515,882,3251,39  %,cinema/images/posters/21065-20211111084515-0.jpg
+15,Le Seigneur des anneaux: Le Retour du roi,The Lord of the Rings: The Return of the King,Fantasy,Le Seigneur des anneaux: Le Retour du roi,2003,f23,2852784,993,2873,39  %,cinema/images/posters/returnking.jpg
+16,La Vérité si je mens! 2,La Vérité Si Je Mens! 2 (Would I Lie to You? 2),Comédie,La Vérité si je mens! 2,2001,f25,2830489,827,3423,36  %,cinema/images/posters/veritesijemens2.jpg
+17,Avatar : la voie de l'eau,Avatar: The Way of Water,Science Fiction,Avatar : la voie de l'eau,2022,f23,2739848,762,3596,20  %,cinema/images/posters/18826-20230308061935.jpg
+18,Harry Potter et la chambre des secrets,Harry Potter and the Chamber of Secrets,Fantasy,Harry Potter et la chambre des secrets,2002,f23,2728766,1007,2710,30  %,cinema/images/posters/harrypotter2.jpg
+19,Astérix et Obélix contre César,Réalisé par :,Comédie,Astérix et Obélix contre César,1999,f25,2718443,780,3485,30  %,cinema/images/posters/asterix1.jpg
+20,"Pirates des Caraïbes, jusqu'au bout du monde",Pirates of the Caribbean : At World's End,Aventure - Action,"Pirates des Caraïbes, jusqu'au bout du monde",2007,f23,2709377,783,3460,47  %,cinema/images/posters/p_5109.jpg
+21,"Pirates des Caraïbes, le secret du coffre maudit",Pirates of the Caribbean: Dead Man's Chest,Aventure - Action,"Pirates des Caraïbes, le secret du coffre maudit",2006,f23,2708112,750,3611,41  %,cinema/images/posters/piratescaraibes2.jpg
+22,Les Visiteurs II - Les Couloirs du temps,Réalisé par :,Comédie,Les Visiteurs II - Les Couloirs du temps,1998,f25,2655916,600,4427,33  %,cinema/images/posters/visiteurs2.jpg
+23,Avatar,Réalisé par :,Science Fiction,Avatar,2009,f23,2648596,726,3648,18  %,cinema/images/posters/9975-20230308064048.jpg
+24,Rien à déclarer,Réalisé par :,Comédie,Rien à déclarer,2011,f25,2587056,1036,2497,32  %,cinema/images/posters/11191-20101022071008.jpg
+25,Avengers: Infinity War,Réalisé par :,Comicbook,Avengers: Infinity War,2018,f23,2565953,843,3044,50  %,cinema/images/posters/15188-20230308071344.jpg
+26,Harry Potter et les reliques de la mort - partie 1,Harry Potter and the Deathly Hallows: Part I,Fantasy,Harry Potter et les reliques de la mort - partie 1,2010,f23,2537450,971,2613,42  %,cinema/images/posters/9839-20101103081138.jpg
+27,Star Wars: Les derniers Jedi,Star Wars: The Last Jedi,Fantasy,Star Wars: Les derniers Jedi,2017,f23,2510462,1027,2444,35  %,cinema/images/posters/15113-20170415020115-0.jpg
+28,Harry Potter et le prisonnier d'Azkaban,Harry Potter and the Prisoner of Azkaban,Fantasy,Harry Potter et le prisonnier d'Azkaban,2004,f23,2503699,907,2760,35  %,cinema/images/posters/harrypotter3.jpg
+29,Harry Potter et l'Ordre du Phénix,Harry Potter and the Order of the Phoenix,Fantasy,Harry Potter et l'Ordre du Phénix,2007,f23,2486291,950,2617,40  %,cinema/images/posters/p_45.jpg
+30,La Ch’tite famille,Réalisé par :,Comédie,La Ch’tite famille,2018,f25,2429906,843,2882,43  %,cinema/images/posters/17666-20171221080308-0.jpg
