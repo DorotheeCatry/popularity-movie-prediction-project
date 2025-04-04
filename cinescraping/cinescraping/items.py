@@ -7,8 +7,7 @@ import scrapy
 
 
 class CinescrapingItem(scrapy.Item):
-    # define the fields for your item here like:
-    # name = scrapy.Field()
+    
     title = scrapy.Field()
     genre = scrapy.Field()
     date = scrapy.Field()
@@ -18,4 +17,14 @@ class CinescrapingItem(scrapy.Item):
     scenario = scrapy.Field()
     production = scrapy.Field()
     music = scrapy.Field()
+    director = scrapy.Field()
+    country = scrapy.Field()
+    language = scrapy.Field()
+    budget = scrapy.Field()
+    box_office = scrapy.Field()
+    week_1 = scrapy.Field() #target
+    critics = scrapy.Field()
+    url_movie = scrapy.Field()
+    classification = scrapy.Field() 
+
 
