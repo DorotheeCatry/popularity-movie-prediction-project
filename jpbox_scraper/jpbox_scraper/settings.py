@@ -101,3 +101,8 @@ FEEDS = {
         "overwrite": True
     }
 }
+
+custom_settings = {
+    "DUPEFILTER_DEBUG": True,
+    "FEED_EXPORT_ENCODING": "utf-8",
+}
