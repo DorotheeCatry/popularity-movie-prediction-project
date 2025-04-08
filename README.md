@@ -31,6 +31,7 @@ This project was developed as part of a brief with the following goals:
 
 ## 📂 Project Structure
 
+```bash
 POPULARITY_MOVIE_PREDICTION_PROJECT/
 │── .venv/
 │── allocine_scraper/
@@ -49,7 +50,7 @@ POPULARITY_MOVIE_PREDICTION_PROJECT/
 │── .gitignore
 │── README.md
 │── requirements.txt
-
+```
 
 ---
 
@@ -81,7 +82,7 @@ Each movie record includes:
 ## 🔐 Environment Variables (.env)
 
 Your `.env` file should look like this:
-```
+```bash
 DB_HOST=localhost 
 DB_USER=your_postgres_username 
 DB_PASSWORD=your_postgres_password 
