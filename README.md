@@ -87,7 +87,9 @@ DB_USER=your_postgres_username
 DB_PASSWORD=your_postgres_password 
 DB_NAME=allocine
 ```
+
 Make sure to replace `your_postgres_username` and `your_postgres_password` with your actual PostgreSQL credentials.
+
 ---
 ## 🛠️ Installation
 
