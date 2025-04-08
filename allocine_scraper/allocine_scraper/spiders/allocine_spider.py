@@ -6,7 +6,7 @@ from allocine_scraper.items import AllocineScraperParsingItem
 class AllocineSpider(CrawlSpider):
     name = "allocinespider"
     allowed_domains = ["allocine.fr"]
-    start_urls = ["https://allocine.fr/films/?page=" + str(x) for x in range(1, 2)]
+    start_urls = ["https://allocine.fr/films/?page=" + str(x) for x in range(1, 2000)]
     custom_settings = {
     'ITEM_PIPELINES' : {
         "allocine_scraper.pipelines.AllocineDatabasePipeline": 300
