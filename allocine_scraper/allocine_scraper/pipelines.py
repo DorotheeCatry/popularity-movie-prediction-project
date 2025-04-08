@@ -1,145 +1,135 @@
-# Define your item pipelines here
-#
-# Don't forget to add your pipeline to the ITEM_PIPELINES setting
-# See: https://docs.scrapy.org/en/latest/topics/item-pipeline.html
-
-
-# useful for handling different item types with a single interface
 from itemadapter import ItemAdapter
-from filmscraper.items import FilmscraperItem, SeriescraperItem
-from filmscraper.items import FilmscraperParsingItem
 import psycopg2
-import sqlite3
-import logging
+import os
+from dotenv import load_dotenv
 
+class AllocineDatabasePipeline:
+    def open_spider(self, spider):
+        load_dotenv()
 
-class AllocineScraperPipeline:
+        hostname = os.getenv('DB_HOST', 'localhost')
+        username = os.getenv('DB_USER', 'dcatry')
+        password = os.getenv('DB_PASSWORD', 'Plasma2020@')
+        database = os.getenv('DB_NAME', 'allocine')
+
+        self.connection = psycopg2.connect(host=hostname, user=username, password=password, dbname=database)
+        self.cur = self.connection.cursor()
+        spider.logger.info("Connection to the database was successful!")
+
+        # Suppression de la table films si elle existe
+        self.cur.execute("DROP TABLE IF EXISTS films")
+
+        # Création de la table films avec la nouvelle structure
+        self.cur.execute("""
+        CREATE TABLE IF NOT EXISTS films(
+            id SERIAL PRIMARY KEY,
+            title TEXT,
+            original_title TEXT,
+            release_date TEXT,
+            duration TEXT,
+            genres TEXT[],
+            press_rating NUMERIC,
+            audience_rating NUMERIC,
+            director TEXT,
+            writer TEXT,
+            audience TEXT,
+            distributor TEXT,
+            movie_type TEXT,
+            nationality TEXT[],
+            languages TEXT[],
+            synopsis TEXT,
+            actors TEXT[]
+        )
+        """)
+        self.connection.commit()
+
     def process_item(self, item, spider):
-        parsingAdapter = ItemAdapter(item)
-        if parsingAdapter.get('type') == 'raw': 
-            filmItem = FilmscraperItem()
-            
-            filmAdapter = ItemAdapter(filmItem)
-            filmAdapter['type'] = "clean"
+        adapter = ItemAdapter(item)
+        
+        # Gestion des ratings avec remplacement de la virgule par un point avant la conversion en float
+        press_rating = adapter.get('press_rating')
+        audience_rating = adapter.get('audience_rating')
+        nationality = adapter.get('nationality')
+        if nationality:
+            nationality = nationality.strip().replace('.', '') 
 
-            filmItem = self.clean_titre(filmItem, parsingAdapter, filmAdapter)
-            filmItem = self.clean_titre_original(filmItem, parsingAdapter, filmAdapter)
-            filmItem = self.clean_genre(filmItem, parsingAdapter, filmAdapter)
-            filmItem = self.clean_duration(filmItem, parsingAdapter, filmAdapter)
-            filmItem = self.clean_annee(filmItem, parsingAdapter, filmAdapter)
-            filmItem = self.clean_annee_production(filmItem, parsingAdapter, filmAdapter)
-            filmItem = self.clean_nationalite(filmItem, parsingAdapter, filmAdapter)
-            filmItem = self.clean_realisateur(filmItem, parsingAdapter, filmAdapter)
-            filmItem = self.clean_langues(filmItem, parsingAdapter, filmAdapter)
-            filmItem = self.clean_description(filmItem, parsingAdapter, filmAdapter)
-            filmItem = self.clean_ratings(filmItem, parsingAdapter, filmAdapter)
-            filmItem = self.clean_public(filmItem, parsingAdapter, filmAdapter)
-            filmItem = self.clean_acteurs(filmItem, parsingAdapter, filmAdapter)
-            return filmItem
-        return None
-    
-    def clean_titre(self,filmItem: FilmscraperItem, parsingAdapter: ItemAdapter, filmAdapter: ItemAdapter):
-        titre = parsingAdapter.get('titre')
-        filmAdapter['titre'] = titre
+        if press_rating:
+            press_rating = float(press_rating.replace(',', '.')) if press_rating else None
+        if audience_rating:
+            audience_rating = float(audience_rating.replace(',', '.')) if audience_rating else None
+
+            # Properly format arrays
+        genres = adapter.get('genres')
+        languages = adapter.get('languages')
+        actors = adapter.get('actors')
+
+        # Convert nationality to proper array format
+        nationality = adapter.get('nationality')
+        if nationality and isinstance(nationality, str):
+            # Convert string to list containing the string
+            nationality = [nationality.strip().replace('.', '')]
         
-        return filmItem
-    
-    def clean_titre_original(self,filmItem: FilmscraperItem, parsingAdapter: ItemAdapter, filmAdapter: ItemAdapter):
-        titre = parsingAdapter.get('titre_original')
-        if titre and 'Titre' in titre[-2]:
-            value = titre[-1]
-        else:
-            value = filmAdapter.get('titre')
-        filmAdapter['titre_original'] = value
+        # Same for other array fields if they're not already lists
+        if languages and isinstance(languages, str):
+            languages = [languages.strip()]
         
-        return filmItem
-    
-    def clean_genre(self,filmItem: FilmscraperItem, parsingAdapter: ItemAdapter, filmAdapter: ItemAdapter):
-        infos = parsingAdapter.get('infos')
-        final_pipe_index = max(index for index, item in enumerate(infos) if item == '|')
-        filmAdapter['genre'] = infos[final_pipe_index + 1:]
-        
-        return filmItem
-        
-    def clean_duration(self,filmItem: FilmscraperItem, parsingAdapter: ItemAdapter, filmAdapter: ItemAdapter):
-        infos = parsingAdapter.get('duration')
-        if all(element == '\n' for element in infos):
-            value = 'N/A'
-        else:
-            value = next(value for value in infos if value != '\n').replace('\n', '')
-        filmAdapter['duration'] = value
-        
-        return filmItem
-    
-    def clean_annee(self,filmItem: FilmscraperItem, parsingAdapter: ItemAdapter, filmAdapter: ItemAdapter):
-        infos = parsingAdapter.get('infos')
-        annee_sortie = infos[0].replace('\n', '').split(' ')[-1]
-        filmAdapter['annee_sortie'] = annee_sortie
-        
-        return filmItem
-    
-    def clean_annee_production(self,filmItem: FilmscraperItem, parsingAdapter: ItemAdapter, filmAdapter: ItemAdapter):
-        infos_technique = parsingAdapter.get('infos_technique')
-        annee_production = infos_technique[infos_technique.index("Année de production") + 1]
-        filmAdapter['annee_production'] = annee_production
-        
-        return filmItem
-        
-    def clean_nationalite(self,filmItem: FilmscraperItem, parsingAdapter: ItemAdapter, filmAdapter: ItemAdapter):
-        nationalite = parsingAdapter.get('nationalite')
-        filmAdapter['nationalite'] = nationalite
-        
-        return filmItem
-    
-    def clean_realisateur(self,filmItem: FilmscraperItem, parsingAdapter: ItemAdapter, filmAdapter: ItemAdapter):
-        realisateur = parsingAdapter.get('realisateur')
-        tmp = parsingAdapter.get('only_realisateur')
-        if realisateur:
-           real = realisateur[1:realisateur.index('Par')]
-        elif tmp:
-            real = tmp[1:]
-        else:
-            real = 'N/A'
-        filmAdapter['realisateur'] = real
-        return filmItem
-    
-    def clean_langues(self,filmItem: FilmscraperItem, parsingAdapter: ItemAdapter, filmAdapter: ItemAdapter):
-        infos_technique = parsingAdapter.get('infos_technique')
-        langues = list(string.replace('\n', '') for string in infos_technique[infos_technique.index("Langues") + 1: infos_technique.index("Format production")])
-        filmAdapter['langues'] = langues
-        
-        return filmItem
-    
-    def clean_description(self,filmItem: FilmscraperItem, parsingAdapter: ItemAdapter, filmAdapter: ItemAdapter):
-        description = parsingAdapter.get('description')
-        filmAdapter['description'] = description
-        
-        return filmItem
-    
-    def clean_ratings(self,filmItem: FilmscraperItem, parsingAdapter: ItemAdapter, filmAdapter: ItemAdapter):
-        ratings = parsingAdapter.get('ratings')
-        if len(ratings) == 2:
-            filmAdapter['notes_presse'] = ratings[0].replace(',', '.')
-            filmAdapter['notes_spectateur'] = ratings[1].replace(',', '.')
-        else:
-            filmAdapter['notes_presse'] = None
-            filmAdapter['notes_spectateur'] = ratings[0].replace(',', '.')
-        
-        return filmItem
-    
-    def clean_public(self,filmItem: FilmscraperItem, parsingAdapter: ItemAdapter, filmAdapter: ItemAdapter):
-        public = parsingAdapter.get('public')
-        
-        filmAdapter['public'] = public if public is not None else 'N/A'
-        
-        return filmItem
-    
-    def clean_acteurs(self,filmItem: FilmscraperItem, parsingAdapter: ItemAdapter, filmAdapter: ItemAdapter):
-        acteurs = parsingAdapter.get('acteurs')
-        acteurs = list(acteur for acteur in acteurs if '\n' not in acteur)
-        if len(acteurs) > 8:
-            filmAdapter['acteurs'] = acteurs[:7]
-        else:
-            filmAdapter['acteurs'] = acteurs
-        
-        return filmItem
+        if genres and isinstance(genres, str):
+            genres = [genres.strip()]
+            
+        if actors and isinstance(actors, str):
+            actors = [actors.strip()]
+
+
+        # Vérification de l'existence des valeurs avant insertion
+        try:
+            self.cur.execute('''
+                INSERT INTO films(
+                    title,
+                    original_title,
+                    release_date,
+                    duration,
+                    genres,
+                    press_rating,
+                    audience_rating,
+                    director,
+                    writer,
+                    audience,
+                    distributor,
+                    movie_type,
+                    nationality,
+                    languages,
+                    synopsis,
+                    actors
+                )
+                VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            ''', (
+                adapter.get('title'),
+                adapter.get('original_title'),
+                adapter.get('release_date'),
+                adapter.get('duration'),
+                genres,
+                press_rating,
+                audience_rating,
+                adapter.get('director'),
+                adapter.get('writer'),
+                adapter.get('audience'),
+                adapter.get('distributor'),
+                adapter.get('movie_type'),
+                nationality,
+                languages,
+                adapter.get('synopsis'),
+                actors
+            ))
+            
+            self.connection.commit()
+            return item
+
+        except psycopg2.Error as e:
+            spider.logger.error(f"Error inserting item into database: {e}")
+            self.connection.rollback()  # Rollback the transaction on error
+            return None  # Optionally return None or the item for retry
+
+    def close_spider(self, spider):
+        # Close the cursor and connection
+        self.cur.close()
+        self.connection.close()

@@ -1,17 +1,21 @@
 import scrapy
 from scrapy import Field
+import scrapy.item
 
-class FilmscraperParsingItem(scrapy.Item):
-    titre = Field()
-    titre_original = Field()
-    infos = Field()
-    infos_technique = Field()
-    realisateur = Field()
-    only_realisateur = Field()
-    nationalite = Field()
-    description = Field()
-    ratings = Field()
+class AllocineScraperParsingItem(scrapy.Item):
+    title = Field()
+    original_title = Field()
+    release_date = Field()
     duration = Field()
-    public = Field()
-    acteurs = Field()
-    type = Field()
+    genres = Field()
+    press_rating = Field()
+    audience_rating = Field()
+    director = Field()
+    writer = Field()
+    audience = Field()
+    distributor = Field()
+    movie_type = Field()
+    nationality = Field()
+    languages = Field()
+    synopsis = Field()
+    actors = Field()
