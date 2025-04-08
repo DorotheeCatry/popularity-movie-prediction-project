@@ -33,98 +33,86 @@ class FilmsSeleniumSpider(scrapy.Spider):
         driver = webdriver.Chrome(options=chrome_options)
         
         try:
-            # Start with the first page
-            yield from self.process_page(driver, 0)
+            url = "https://www.jpbox-office.com/v9_demarrage.php?view=2"
+            driver.get(url)
+
+            max_retries = 5
+            for attempt in range(max_retries):
+                driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+                time.sleep(2)
+                
+                WebDriverWait(driver, 10).until(
+                    EC.presence_of_element_located((By.CLASS_NAME, "col_poster_titre"))
+                )
+                
+                sel = Selector(text=driver.page_source)
+                rows = sel.xpath('//tr[td[contains(@class, "col_poster_titre")] and .//h3/a]')
+                
+                if len(rows) >= 30:
+                    break
+                    
+                self.logger.info(f"Attempt {attempt + 1}/{max_retries}: Found {len(rows)} rows, expecting 30. Retrying...")
+            
+            self.logger.info(f"✅ Final row count: {len(rows)}")
+
+            for idx, row in enumerate(rows, 1):
+                try:
+                    titre = row.xpath('.//h3/a/text()').get(default='').strip()
+                    film_href = row.xpath('.//h3/a/@href').get(default='')
+                    
+                    if not titre or not film_href:
+                        self.logger.error(f"Row {idx}: Missing title or href for content: {row.get()}")
+                        continue
+                        
+                    match = re.search(r'id=(\d+)', film_href)
+                    film_id = match.group(1) if match else ""
+                    
+                    if not film_id:
+                        self.logger.error(f"Row {idx}: Could not extract film ID from {film_href}")
+                        continue
+
+                    realisateur_link = row.xpath('.//a[contains(@href, "fichacteur.php")]/@href').get()
+                    realisateur_id_match = re.search(r'id=(\d+)', realisateur_link) if realisateur_link else None
+                    realisateur_id = str(realisateur_id_match.group(1)) if realisateur_id_match else ""
+
+                    titre_vo, realisateur, genre = self.extract_details(row)
+
+                    film_data = {
+                        "film_id": film_id,
+                        "realisateur_id": realisateur_id,
+                        "rang": row.xpath('.//td[1]//div/text()').get(default='').strip(),
+                        "titre": titre,
+                        "titre_vo": titre_vo,
+                        "realisateur": realisateur,
+                        "genre": genre,
+                        "annee": row.xpath('.//td[4]/a/text()').get(default='').strip(),
+                        "pays": row.xpath('.//td[5]//img/@src').get(default='').split("/")[-1].replace(".jpg", ""),
+                        "entrees": row.xpath('.//td[6]/text()').get(default='').strip().replace('\u00a0', '').replace(' ', ''),
+                        "salles": row.xpath('.//td[7]/text()').get(default='').strip().replace('\u00a0', '').replace(' ', ''),
+                        "moy_salle": row.xpath('.//td[8]/text()').get(default='').strip().replace('\u00a0', '').replace(' ', ''),
+                        "part_marche": row.xpath('.//td[9]/text()').get(default='').strip(),
+                        "affiche": row.xpath('.//td[2]/img/@src').get(default='').strip(),
+                        "acteurs": [],
+                        "moyenne_fr_acteurs": ""
+                    }
+
+                    self.logger.info(f"Processing film {idx}: {titre} (ID: {film_id})")
+
+                    cast_url = f"https://www.jpbox-office.com/fichfilm.php?id={film_id}&view=7"
+                    yield scrapy.Request(
+                        cast_url,
+                        callback=self.parse_cast,
+                        meta={'film': film_data},
+                        errback=self.handle_error,
+                        dont_filter=True
+                    )
+
+                except Exception as e:
+                    self.logger.error(f"Error processing row {idx}: {str(e)}")
+                    continue
+
         finally:
             driver.quit()
-
-    def process_page(self, driver, page_offset):
-        url = f"https://www.jpbox-office.com/v9_demarrage.php?view=2&filtre=classg&limite={page_offset}&infla=0&variable=0&tri=champ0&order=DESC&limit5=0"
-        self.logger.info(f"Processing page with offset {page_offset}")
-        
-        driver.get(url)
-        time.sleep(2)  # Allow page to load
-
-        max_retries = 5
-        for attempt in range(max_retries):
-            driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-            time.sleep(2)
-            
-            WebDriverWait(driver, 10).until(
-                EC.presence_of_element_located((By.CLASS_NAME, "col_poster_titre"))
-            )
-            
-            sel = Selector(text=driver.page_source)
-            rows = sel.xpath('//tr[td[contains(@class, "col_poster_titre")] and .//h3/a]')
-            
-            if len(rows) >= 30 or attempt == max_retries - 1:
-                break
-                
-            self.logger.info(f"Attempt {attempt + 1}/{max_retries}: Found {len(rows)} rows, expecting 30. Retrying...")
-        
-        self.logger.info(f"✅ Found {len(rows)} rows on page {page_offset//30 + 1}")
-
-        # Process current page
-        for idx, row in enumerate(rows, 1):
-            try:
-                titre = row.xpath('.//h3/a/text()').get(default='').strip()
-                film_href = row.xpath('.//h3/a/@href').get(default='')
-                
-                if not titre or not film_href:
-                    self.logger.error(f"Row {idx}: Missing title or href for content: {row.get()}")
-                    continue
-                    
-                match = re.search(r'id=(\d+)', film_href)
-                film_id = match.group(1) if match else ""
-                
-                if not film_id:
-                    self.logger.error(f"Row {idx}: Could not extract film ID from {film_href}")
-                    continue
-
-                realisateur_link = row.xpath('.//a[contains(@href, "fichacteur.php")]/@href').get()
-                realisateur_id_match = re.search(r'id=(\d+)', realisateur_link) if realisateur_link else None
-                realisateur_id = str(realisateur_id_match.group(1)) if realisateur_id_match else ""
-
-                titre_vo, realisateur, genre = self.extract_details(row)
-
-                film_data = {
-                    "film_id": film_id,
-                    "realisateur_id": realisateur_id,
-                    "rang": row.xpath('.//td[1]//div/text()').get(default='').strip(),
-                    "titre": titre,
-                    "titre_vo": titre_vo,
-                    "realisateur": realisateur,
-                    "genre": genre,
-                    "annee": row.xpath('.//td[4]/a/text()').get(default='').strip(),
-                    "pays": row.xpath('.//td[5]//img/@src').get(default='').split("/")[-1].replace(".jpg", ""),
-                    "entrees": row.xpath('.//td[6]/text()').get(default='').strip().replace('\u00a0', '').replace(' ', ''),
-                    "salles": row.xpath('.//td[7]/text()').get(default='').strip().replace('\u00a0', '').replace(' ', ''),
-                    "moy_salle": row.xpath('.//td[8]/text()').get(default='').strip().replace('\u00a0', '').replace(' ', ''),
-                    "part_marche": row.xpath('.//td[9]/text()').get(default='').strip(),
-                    "affiche": row.xpath('.//td[2]/img/@src').get(default='').strip(),
-                    "acteurs": [],
-                    "moyenne_fr_acteurs": ""
-                }
-
-                self.logger.info(f"Processing film {idx + page_offset}: {titre} (ID: {film_id})")
-
-                cast_url = f"https://www.jpbox-office.com/fichfilm.php?id={film_id}&view=7"
-                yield scrapy.Request(
-                    cast_url,
-                    callback=self.parse_cast,
-                    meta={'film': film_data},
-                    errback=self.handle_error,
-                    dont_filter=True
-                )
-
-            except Exception as e:
-                self.logger.error(f"Error processing row {idx}: {str(e)}")
-                continue
-
-        # Check if there are more pages
-        next_page = sel.xpath('//div[@class="pagination"]/a[contains(text(), ">")]/@href').get()
-        if next_page and page_offset < 20000:  # Limit to first 330 films (11 pages)
-            yield from self.process_page(driver, page_offset + 30)
 
     def extract_details(self, row):
         try:
