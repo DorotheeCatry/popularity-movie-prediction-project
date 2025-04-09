@@ -5,11 +5,11 @@ import re
 
 
 class AllocineSpider(scrapy.Spider):
-    name = "allocinespider"
+    name = "allocine2024spider"
 
     allowed_domains = ["allocine.fr"]
 
-    start_urls = ["https://www.allocine.fr/films/decennie-2010/?page=" + str(x) for x in range(1, 1760)]
+    start_urls = ["https://www.allocine.fr/films/decennie-2020/annee-2024/?page=" + str(x) for x in range(1, 215)]
 
 
     def parse(self, response):
