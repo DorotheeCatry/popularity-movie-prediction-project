@@ -19,3 +19,6 @@ class AllocineScraperParsingItem(scrapy.Item):
     languages = Field()
     synopsis = Field()
     actors = Field()
+    box_office_fr = Field()
+    box_office_us = Field()
+    image_url = Field()
