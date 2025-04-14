@@ -8,20 +8,29 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from statistics import mean
+from jpbox_scraper.utils import get_scraped_film_ids
 
 class FilmsSeleniumSpider(scrapy.Spider):
     name = "films"
     custom_settings = {
         "DUPEFILTER_DEBUG": True,
         "FEED_EXPORT_ENCODING": "utf-8",
-        "DUPEFILTER_CLASS": "scrapy.dupefilters.BaseDupeFilter",  # Disable duplicate filtering
+        "DUPEFILTER_CLASS": "scrapy.dupefilters.BaseDupeFilter",
         "FEED_EXPORT_FIELDS": [
             "film_id", "realisateur_id", "rang", "titre", "titre_vo",
             "realisateur", "genre", "annee", "pays", "entrees", "salles",
             "moy_salle", "part_marche", "affiche", "moyenne_fr_realisateur",
-            "sortie", "distributeur", "classification", "acteurs", "moyenne_fr_acteurs"
-        ]
+            "sortie", "distributeur", "classification", "acteurs", 
+            "moyennes_individuelles_acteurs"
+        ]#,
+            #"DOWNLOAD_TIMEOUT": 20,          # Increase timeout if needed
+            #"RETRY_TIMES": 5,                # Number of retry attempts
+            #"RETRY_DELAY": 10                # Delay between retries in seconds
     }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.scraped_ids = get_scraped_film_ids("films_backup.csv")
 
     def start_requests(self):
         chrome_options = Options()
@@ -33,7 +42,6 @@ class FilmsSeleniumSpider(scrapy.Spider):
         driver = webdriver.Chrome(options=chrome_options)
         
         try:
-            # Start with the first page
             yield from self.process_page(driver, 0)
         finally:
             driver.quit()
@@ -43,13 +51,16 @@ class FilmsSeleniumSpider(scrapy.Spider):
         self.logger.info(f"Processing page with offset {page_offset}")
         
         driver.get(url)
-        time.sleep(2)  # Allow page to load
+        time.sleep(2)
 
-        max_retries = 5
-        for attempt in range(max_retries):
+        # Dynamic scrolling: scroll until no additional content is loaded or at least 30 rows are present.
+        prev_height = driver.execute_script("return document.body.scrollHeight")
+        while True:
             driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
             time.sleep(2)
+            curr_height = driver.execute_script("return document.body.scrollHeight")
             
+            # Wait for the elements to be present
             WebDriverWait(driver, 10).until(
                 EC.presence_of_element_located((By.CLASS_NAME, "col_poster_titre"))
             )
@@ -57,14 +68,14 @@ class FilmsSeleniumSpider(scrapy.Spider):
             sel = Selector(text=driver.page_source)
             rows = sel.xpath('//tr[td[contains(@class, "col_poster_titre")] and .//h3/a]')
             
-            if len(rows) >= 30 or attempt == max_retries - 1:
+            if curr_height == prev_height or len(rows) >= 30:
                 break
-                
-            self.logger.info(f"Attempt {attempt + 1}/{max_retries}: Found {len(rows)} rows, expecting 30. Retrying...")
+            
+            self.logger.info(f"Scrolling... Current rows: {len(rows)}. Continuing until 30 rows or no change in page height.")
+            prev_height = curr_height
         
         self.logger.info(f"✅ Found {len(rows)} rows on page {page_offset//30 + 1}")
 
-        # Process current page
         for idx, row in enumerate(rows, 1):
             try:
                 titre = row.xpath('.//h3/a/text()').get(default='').strip()
@@ -79,6 +90,10 @@ class FilmsSeleniumSpider(scrapy.Spider):
                 
                 if not film_id:
                     self.logger.error(f"Row {idx}: Could not extract film ID from {film_href}")
+                    continue
+
+                if film_id in self.scraped_ids:
+                    self.logger.info(f"⏩ Skipping already scraped film ID: {film_id}")
                     continue
 
                 realisateur_link = row.xpath('.//a[contains(@href, "fichacteur.php")]/@href').get()
@@ -103,7 +118,7 @@ class FilmsSeleniumSpider(scrapy.Spider):
                     "part_marche": row.xpath('.//td[9]/text()').get(default='').strip(),
                     "affiche": row.xpath('.//td[2]/img/@src').get(default='').strip(),
                     "acteurs": [],
-                    "moyenne_fr_acteurs": ""
+                    "moyennes_individuelles_acteurs": []
                 }
 
                 self.logger.info(f"Processing film {idx + page_offset}: {titre} (ID: {film_id})")
@@ -121,9 +136,8 @@ class FilmsSeleniumSpider(scrapy.Spider):
                 self.logger.error(f"Error processing row {idx}: {str(e)}")
                 continue
 
-        # Check if there are more pages
         next_page = sel.xpath('//div[@class="pagination"]/a[contains(text(), ">")]/@href').get()
-        if next_page and page_offset < 20000:  # Limit to first 330 films (11 pages)
+        if next_page and page_offset < 20000:
             yield from self.process_page(driver, page_offset + 30)
 
     def extract_details(self, row):
@@ -156,7 +170,6 @@ class FilmsSeleniumSpider(scrapy.Spider):
     def parse_cast(self, response):
         film = response.meta['film']
         try:
-            # Find the table containing the casting information
             cast_table = response.xpath('//table[@class="tablesmall tablesmall5"]')
             if not cast_table:
                 return self.proceed_with_director(response, film)
@@ -164,31 +177,26 @@ class FilmsSeleniumSpider(scrapy.Spider):
             actor_data = []
             in_actors_section = False
 
-            # Iterate through all rows in the table
             for row in cast_table.xpath('.//tr'):
-                # Check for section headers
                 section_header = row.xpath('.//td[@class="celluletitre"]/text()').get()
                 if section_header:
                     section_header = section_header.strip()
                     if section_header == "Acteurs et actrices":
                         in_actors_section = True
-                        continue
-                    elif in_actors_section:  # If we were in actors section and hit a new section
-                        break  # Stop processing as we've left the actors section
+                    elif in_actors_section:
+                        break
+                    continue
 
-                # Only process rows when we're in the actors section
                 if in_actors_section:
-                    # Get actor information if the row contains an actor
                     actor_link = row.xpath('.//td[@class="col_poster_titre"]//a[contains(@href, "fichacteur.php")]/@href').get()
                     if actor_link:
-                        # Only process if the role type indicates it's an actor (not a producer, writer, etc.)
                         role_type = row.xpath('.//td[@class="col_poster_titre"][2]/i/text()').get('')
                         if any(keyword in role_type for keyword in ['Rôle principal', 'Second rôle', 'Apparition', 'Voix-off']):
                             actor_name = row.xpath('.//td[@class="col_poster_titre"]//a/text()').get('').strip()
                             character_name = row.xpath('.//td[@class="col_poster_titre"][2]/text()').getall()
                             character_name = ' '.join([r.strip() for r in character_name if r.strip()])
+                            character_name = character_name.lstrip('- ').strip()
                             
-                            # Extract actor ID from the link
                             actor_id_match = re.search(r'id=(\d+)', actor_link)
                             if actor_id_match:
                                 actor_id = actor_id_match.group(1)
@@ -236,14 +244,16 @@ class FilmsSeleniumSpider(scrapy.Spider):
             if moyenne:
                 moyenne = int(moyenne.strip().replace('\u00a0', '').replace(' ', ''))
                 film['actor_data']['averages'].append(moyenne)
+                film['moyennes_individuelles_acteurs'].append({
+                    'name': film['acteurs'][actor_index]['name'],
+                    'moyenne': moyenne
+                })
             
             film['actor_data']['processed'] += 1
             
             if film['actor_data']['processed'] >= film['actor_data']['total']:
                 if film['actor_data']['averages']:
-                    film['moyenne_fr_acteurs'] = str(int(mean(film['actor_data']['averages'])))
-                    self.logger.info(f"🎭 Actors moyenne for {film['titre']} → {film['moyenne_fr_acteurs']}")
-                del film['actor_data']
+                    del film['actor_data']
                 return self.proceed_with_director(response, film)
             else:
                 next_actor = film['acteurs'][actor_index + 1]

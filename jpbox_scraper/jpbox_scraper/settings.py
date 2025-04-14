@@ -100,11 +100,6 @@ FEEDS = {
         "format": "csv",
         "encoding": "utf8",
         "overwrite": True
-    },
-    "casting_detail.csv": {
-        "format": "csv",
-        "encoding": "utf8",
-        "overwrite": True
     }
 }
 
