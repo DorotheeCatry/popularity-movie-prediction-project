@@ -1,4 +1,4 @@
-JOBDIR = 'jobdir'
+# JOBDIR = 'jobdir'
 
 BOT_NAME = "movies_scraping"
 SPIDER_MODULES = ["movies_scraping.spiders"]
