@@ -10,6 +10,14 @@ __pycache__/
 *.egg-info/
 .eggs/
 
+# Django-specific files
+db.sqlite3
+*.sqlite3
+/media/
+staticfiles/
+static/
+*.log
+
 # Data files
 *.csv
 **/*.csv
@@ -34,3 +42,8 @@ __pycache__/
 # OS-specific files
 .DS_Store
 Thumbs.db
+
+# Node.js-related files (if using npm/yarn for frontend)
+node_modules/
+package-lock.json
+yarn.lock
