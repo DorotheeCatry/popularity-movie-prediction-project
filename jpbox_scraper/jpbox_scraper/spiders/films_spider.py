@@ -11,6 +11,9 @@ from statistics import mean
 from jpbox_scraper.utils import get_scraped_film_ids
 
 class FilmsSeleniumSpider(scrapy.Spider):
+    """
+    A Scrapy spider that uses Selenium to scrape movie data from the JPBox-Office website.
+    """
     name = "films"
     custom_settings = {
         "DUPEFILTER_DEBUG": True,
@@ -22,17 +25,20 @@ class FilmsSeleniumSpider(scrapy.Spider):
             "moy_salle", "part_marche", "affiche", "moyenne_fr_realisateur",
             "sortie", "distributeur", "classification", "acteurs", 
             "moyennes_individuelles_acteurs"
-        ]#,
-            #"DOWNLOAD_TIMEOUT": 20,          # Increase timeout if needed
-            #"RETRY_TIMES": 5,                # Number of retry attempts
-            #"RETRY_DELAY": 10                # Delay between retries in seconds
+        ]
     }
 
     def __init__(self, *args, **kwargs):
+        """
+        Initializes the spider and loads the list of already scraped film IDs.
+        """
         super().__init__(*args, **kwargs)
         self.scraped_ids = get_scraped_film_ids("films_backup.csv")
 
     def start_requests(self):
+        """
+        Starts the scraping process by initializing a Selenium WebDriver and processing the first page.
+        """
         chrome_options = Options()
         chrome_options.add_argument("--headless=new")
         chrome_options.add_argument("--no-sandbox")
@@ -47,20 +53,26 @@ class FilmsSeleniumSpider(scrapy.Spider):
             driver.quit()
 
     def process_page(self, driver, page_offset):
+        """
+        Processes a single page of the JPBox-Office website.
+
+        Args:
+            driver (webdriver.Chrome): The Selenium WebDriver instance.
+            page_offset (int): The offset for pagination.
+        """
         url = f"https://www.jpbox-office.com/v9_demarrage.php?view=2&filtre=classg&limite={page_offset}&infla=0&variable=0&tri=champ0&order=DESC&limit5=0"
         self.logger.info(f"Processing page with offset {page_offset}")
         
         driver.get(url)
         time.sleep(2)
 
-        # Dynamic scrolling: scroll until no additional content is loaded or at least 30 rows are present.
+        # Dynamic scrolling to load content
         prev_height = driver.execute_script("return document.body.scrollHeight")
         while True:
             driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
             time.sleep(2)
             curr_height = driver.execute_script("return document.body.scrollHeight")
             
-            # Wait for the elements to be present
             WebDriverWait(driver, 10).until(
                 EC.presence_of_element_located((By.CLASS_NAME, "col_poster_titre"))
             )
@@ -141,6 +153,15 @@ class FilmsSeleniumSpider(scrapy.Spider):
             yield from self.process_page(driver, page_offset + 30)
 
     def extract_details(self, row):
+        """
+        Extracts additional details (original title, director, genre) from a row.
+
+        Args:
+            row (Selector): The row selector containing movie data.
+
+        Returns:
+            tuple: A tuple containing the original title, director, and genre.
+        """
         try:
             titre_vo, realisateur, genre = "", "", ""
 
@@ -168,6 +189,12 @@ class FilmsSeleniumSpider(scrapy.Spider):
             return "", "", ""
 
     def parse_cast(self, response):
+        """
+        Parses the cast information for a film.
+
+        Args:
+            response (scrapy.http.Response): The response object containing the cast page.
+        """
         film = response.meta['film']
         try:
             cast_table = response.xpath('//table[@class="tablesmall tablesmall5"]')
@@ -219,6 +246,14 @@ class FilmsSeleniumSpider(scrapy.Spider):
             return self.proceed_with_director(response, film)
 
     def fetch_actor_averages(self, response, film, actors):
+        """
+        Fetches the average box office performance for each actor in the cast.
+
+        Args:
+            response (scrapy.http.Response): The response object.
+            film (dict): The film data dictionary.
+            actors (list): List of actor data dictionaries.
+        """
         try:
             film['actor_data'] = {'total': len(actors), 'processed': 0, 'averages': []}
             actor = actors[0]
@@ -235,6 +270,12 @@ class FilmsSeleniumSpider(scrapy.Spider):
             return self.proceed_with_director(response, film)
 
     def parse_actor_average(self, response):
+        """
+        Parses the average box office performance for an actor.
+
+        Args:
+            response (scrapy.http.Response): The response object containing the actor's page.
+        """
         film = response.meta['film']
         actor_index = response.meta['actor_index']
         
@@ -270,6 +311,13 @@ class FilmsSeleniumSpider(scrapy.Spider):
             return self.proceed_with_director(response, film)
 
     def proceed_with_director(self, response, film):
+        """
+        Proceeds to fetch the director's average box office performance.
+
+        Args:
+            response (scrapy.http.Response): The response object.
+            film (dict): The film data dictionary.
+        """
         if film['realisateur_id']:
             url = f"https://www.jpbox-office.com/fichacteur.php?id={film['realisateur_id']}"
             return scrapy.Request(
@@ -291,6 +339,12 @@ class FilmsSeleniumSpider(scrapy.Spider):
             )
 
     def parse_realisateur(self, response):
+        """
+        Parses the director's average box office performance.
+
+        Args:
+            response (scrapy.http.Response): The response object containing the director's page.
+        """
         film = response.meta['film']
         try:
             france_table = response.xpath('//caption[contains(text(), "ENTREES FRANCE")]/parent::table')
@@ -313,6 +367,12 @@ class FilmsSeleniumSpider(scrapy.Spider):
             yield film
 
     def parse_detail(self, response):
+        """
+        Parses additional details about the film.
+
+        Args:
+            response (scrapy.http.Response): The response object containing the film's detail page.
+        """
         film = response.meta['film']
         try:
             film["sortie"] = response.xpath('//p[contains(text(), "Sortie")]/a/text()').get(default='').strip()
@@ -324,6 +384,12 @@ class FilmsSeleniumSpider(scrapy.Spider):
             yield film
 
     def handle_error(self, failure):
+        """
+        Handles errors during requests.
+
+        Args:
+            failure (scrapy.Failure): The failure object containing error details.
+        """
         self.logger.error(f"Request failed: {failure.value}")
         if 'film' in failure.request.meta:
             yield failure.request.meta['film']
