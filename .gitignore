@@ -1,5 +1,53 @@
+# Environment files
 .env
-.venv
+.venv/
+
+# Python-related files
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+*.egg-info/
+.eggs/
+
+# Django-specific files
+db.sqlite3
+*.sqlite3
+/media/
+staticfiles/
+static/
+*.log
+
+# Data files
+*.csv
+**/*.csv
+*.gz
+*.zip
+*.tar
+*.tar.gz
+
+# Logs and temporary files
+*.log
+*.tmp
+*.swp
+*.swo
+*.bak
+
+# IDE and editor-specific files
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Node.js-related files (if using npm/yarn for frontend)
+node_modules/
+package-lock.json
+yarn.lock
+
 __pycache__
 
 # fichiers csv
