@@ -5,7 +5,7 @@ from django.contrib.auth.views import LoginView, PasswordChangeView, PasswordRes
 from django.urls import reverse_lazy
 from django.shortcuts import redirect
 from django.contrib.auth import update_session_auth_hash
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView,TemplateView
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from django.contrib import messages
 from .models import User
@@ -113,3 +113,11 @@ class ManagerDeleteView(AdminRequiredMixin, DeleteView):
     
     def get_queryset(self):
         return User.objects.filter(role='manager')
+
+
+class HomeView(TemplateView):
+    """
+    A simple home view that acts as the landing page after login.
+    More details and features will be implemented later.
+    """
+    template_name = "user/home.html"

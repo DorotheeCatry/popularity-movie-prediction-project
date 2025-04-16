@@ -7,6 +7,7 @@ from .views import (
     ManagerCreateView,
     ManagerUpdateView,
     ManagerDeleteView,
+    HomeView
 )
 
 urlpatterns = [
@@ -20,4 +21,6 @@ urlpatterns = [
     path('managers/add/', ManagerCreateView.as_view(), name='manager_add'),
     path('managers/<int:pk>/edit/', ManagerUpdateView.as_view(), name='manager_edit'),
     path('managers/<int:pk>/delete/', ManagerDeleteView.as_view(), name='manager_delete'),
+    # Home view after login
+    path('home/', HomeView.as_view(), name='home'),
 ]
