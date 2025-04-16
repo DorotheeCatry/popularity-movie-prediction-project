@@ -1,12 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Cinema Interface{% endblock %}</title>
+    <title>{% block title %}CinemaPredict{% endblock %}</title>
     {% load static %}
     {% load tailwind_tags %}
     {% tailwind_css %}
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body class="bg-slate-900 min-h-screen">
     <!-- Navigation -->
@@ -15,23 +16,36 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
                 <div class="flex items-center">
-                    <div class="flex-shrink-0">
+                    <div class="flex-shrink-0 flex items-center">
+                        <i data-lucide="clapperboard" class="h-8 w-8 text-red-500 mr-2"></i>
                         <span class="text-red-500 text-2xl font-bold">CinemaPredict</span>
                     </div>
                     <div class="hidden md:block">
                         <div class="ml-10 flex items-baseline space-x-4">
-                            <a href="{% url 'home' %}" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Dashboard</a>
+                            <a href="{% url 'home' %}" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium flex items-center">
+                                <i data-lucide="home" class="h-4 w-4 mr-2"></i>
+                                Page d'accueil
+                            </a>
                             {% if user.role == 'admin' %}
-                            <a href="{% url 'manager_list' %}" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Manage Users</a>
+                            <a href="{% url 'manager_list' %}" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium flex items-center">
+                                <i data-lucide="users" class="h-4 w-4 mr-2"></i>
+                                Gérer les utilisateurs
+                            </a>
                             {% endif %}
                         </div>
                     </div>
                 </div>
                 <div class="flex items-center">
-                    <span class="text-gray-300 mr-4">{{ user.email }}</span>
+                    <span class="text-gray-300 mr-4 flex items-center">
+                        <i data-lucide="user" class="h-4 w-4 mr-2"></i>
+                        {{ user.email }}
+                    </span>
                     <form method="POST" action="{% url 'logout' %}">
                         {% csrf_token %}
-                        <button type="submit" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Logout</button>
+                        <button type="submit" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium flex items-center">
+                            <i data-lucide="log-out" class="h-4 w-4 mr-2"></i>
+                            Déconnexion
+                        </button>
                     </form>
                 </div>
             </div>
@@ -44,7 +58,8 @@
         {% if messages %}
         <div class="mb-4">
             {% for message in messages %}
-            <div class="p-4 {% if message.tags == 'success' %}bg-green-100 text-green-700{% else %}bg-red-100 text-red-700{% endif %} rounded-lg">
+            <div class="p-4 flex items-center {% if message.tags == 'success' %}bg-green-100 text-green-700{% else %}bg-red-100 text-red-700{% endif %} rounded-lg">
+                <i data-lucide="{% if message.tags == 'success' %}check-circle{% else %}alert-circle{% endif %}" class="h-5 w-5 mr-2"></i>
                 {{ message }}
             </div>
             {% endfor %}
@@ -53,5 +68,11 @@
         
         {% block content %}{% endblock %}
     </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            lucide.createIcons();
+        });
+    </script>
 </body>
 </html>

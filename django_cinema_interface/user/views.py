@@ -50,7 +50,7 @@ class ForcePasswordChangeView(LoginRequiredMixin, PasswordChangeView):
     """
     template_name = 'user/force_password_change.html'
     form_class = CustomPasswordChangeForm  # Use your custom or built-in form here.
-    success_url = reverse_lazy('dashboard')  # Adjust the name to your dashboard URL.
+    success_url = reverse_lazy('home')  # Adjust the name to your dashboard URL.
     
     def form_valid(self, form):
         response = super().form_valid(form)

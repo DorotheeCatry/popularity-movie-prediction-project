@@ -1,65 +1,120 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-    <div class="max-w-6xl w-full flex gap-8">
-        <!-- Info Section -->
-        <div class="w-1/2 bg-slate-800 p-8 rounded-xl shadow-lg">
-            <h2 class="text-3xl font-bold text-white mb-6">Welcome to CinemaPredict</h2>
-            <p class="text-gray-300 mb-4">Your intelligent cinema management solution that helps predict the most popular films for your theater.</p>
-            <div class="space-y-4 text-gray-300">
-                <div class="flex items-start">
-                    <svg class="h-6 w-6 text-red-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                    </svg>
-                    <p>Advanced analytics for movie performance prediction</p>
-                </div>
-                <div class="flex items-start">
-                    <svg class="h-6 w-6 text-red-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                    </svg>
-                    <p>Comprehensive dashboard for theater management</p>
-                </div>
-                <div class="flex items-start">
-                    <svg class="h-6 w-6 text-red-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                    </svg>
-                    <p>Secure role-based access control</p>
+<div class="flex min-h-screen">
+    <!-- Left Half: Background Image -->
+    <div class="hidden md:block w-1/2 relative">
+        <img src="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&q=80&w=2000" 
+             alt="Cinema" class="absolute inset-0 w-full h-full object-cover">
+        <div class="absolute inset-0 bg-gradient-to-r from-red-500/80 to-black/50"></div>
+        <div class="absolute inset-0 flex items-center justify-center">
+            <div class="text-center text-white px-8 max-w-lg">
+                <i data-lucide="clapperboard" class="h-12 w-12 text-white mb-4 mx-auto"></i>
+                <h2 class="text-4xl font-extrabold mb-6">CinemaPredict Analytics</h2>
+                <p class="text-xl leading-relaxed">
+                    Votre plateforme intelligente pour prédire le succès de vos films.
+                </p>
+                <div class="mt-8 flex justify-center space-x-4">
+                    <div class="bg-white/20 backdrop-blur-sm p-4 rounded-lg">
+                        <i data-lucide="trending-up" class="h-8 w-8 text-white mx-auto"></i>
+                        <p class="mt-2 text-sm font-medium">Prédictions précises</p>
+                    </div>
+                    <div class="bg-white/20 backdrop-blur-sm p-4 rounded-lg">
+                        <i data-lucide="activity" class="h-8 w-8 text-white mx-auto"></i>
+                        <p class="mt-2 text-sm font-medium">Analyse en temps réel</p>
+                    </div>
+                    <div class="bg-white/20 backdrop-blur-sm p-4 rounded-lg">
+                        <i data-lucide="bar-chart" class="h-8 w-8 text-white mx-auto"></i>
+                        <p class="mt-2 text-sm font-medium">Statistiques détaillées</p>
+                    </div>
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- Login Form -->
-        <div class="w-1/2 bg-slate-800 p-8 rounded-xl shadow-lg">
+    <!-- Right Half: Login Form -->
+    <div class="w-full md:w-1/2 flex items-center justify-center p-8 bg-slate-900">
+        <div class="max-w-md w-full space-y-8">
             <div>
-                <h2 class="text-3xl font-bold text-white mb-6">Sign in to your account</h2>
-                <form class="mt-8 space-y-6" method="post">
-                    {% csrf_token %}
-                    <div class="rounded-md shadow-sm -space-y-px">
-                        <div class="mb-4">
-                            <label for="email" class="text-sm font-medium text-gray-300">Email address</label>
-                            <input id="email" name="username" type="email" required class="mt-1 appearance-none rounded-md relative block w-full px-3 py-2 border border-slate-700 bg-slate-900 text-gray-300 placeholder-gray-500 focus:outline-none focus:ring-red-500 focus:border-red-500 focus:z-10 sm:text-sm">
-                        </div>
-                        <div class="mb-4">
-                            <label for="password" class="text-sm font-medium text-gray-300">Password</label>
-                            <input id="password" name="password" type="password" required class="mt-1 appearance-none rounded-md relative block w-full px-3 py-2 border border-slate-700 bg-slate-900 text-gray-300 placeholder-gray-500 focus:outline-none focus:ring-red-500 focus:border-red-500 focus:z-10 sm:text-sm">
-                        </div>
+                <div class="flex justify-center">
+                    <div class="h-16 w-16 bg-red-500/20 rounded-full flex items-center justify-center">
+                        <i data-lucide="clapperboard" class="h-8 w-8 text-red-500"></i>
                     </div>
+                </div>
+                <h2 class="mt-6 text-center text-3xl font-extrabold text-white">
+                    Connexion à votre compte
+                </h2>
+                <p class="mt-2 text-center text-sm text-gray-400">
+                    Connectez-vous pour accéder à votre espace CinemaPredict.
+                </p>
+            </div>
 
-                    <div class="flex items-center justify-between">
-                        <div class="text-sm">
-                            <a href="{% url 'forgot_password' %}" class="font-medium text-red-500 hover:text-red-400">Forgot your password?</a>
+            {% if messages %}
+            <div>
+                {% for message in messages %}
+                <div class="mb-4 p-3 text-white rounded-md flex items-center {% if message.tags == 'success' %}bg-green-500{% else %}bg-red-500{% endif %}">
+                    <i data-lucide="{% if message.tags == 'success' %}check-circle{% else %}alert-circle{% endif %}" class="h-5 w-5 mr-2"></i>
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <form class="mt-8 space-y-6" method="post">
+                {% csrf_token %}
+                <div class="space-y-4">
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-300">Adresse email</label>
+                        <div class="mt-1 relative rounded-md shadow-sm">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i data-lucide="mail" class="h-5 w-5 text-gray-400"></i>
+                            </div>
+                            <input type="email" name="username" id="email" required
+                                class="pl-10 appearance-none block w-full px-3 py-3 border border-slate-700 bg-slate-800 text-white rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
+                                placeholder="Entrez votre adresse email">
                         </div>
                     </div>
 
                     <div>
-                        <button type="submit" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
-                            Sign in
-                        </button>
+                        <label for="password" class="block text-sm font-medium text-gray-300">Mot de passe</label>
+                        <div class="mt-1 relative rounded-md shadow-sm">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i data-lucide="lock" class="h-5 w-5 text-gray-400"></i>
+                            </div>
+                            <input type="password" name="password" id="password" required
+                                class="pl-10 appearance-none block w-full px-3 py-3 border border-slate-700 bg-slate-800 text-white rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
+                                placeholder="Entrez votre mot de passe">
+                        </div>
+                        <p class="mt-2 text-sm text-gray-400">
+                            Le mot de passe doit contenir au moins 8 caractères, incluant des lettres majuscules, minuscules et des chiffres.
+                        </p>
                     </div>
-                </form>
-            </div>
+                </div>
+
+                <div class="flex items-center justify-between">
+                    <div class="text-sm">
+                        <a href="{% url 'forgot_password' %}" class="font-medium text-red-500 hover:text-red-400 flex items-center">
+                            <i data-lucide="help-circle" class="h-4 w-4 mr-1"></i>
+                            Mot de passe oublié ?
+                        </a>
+                    </div>
+                </div>
+
+                <button type="submit"
+                    class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition duration-150 ease-in-out">
+                    <span class="absolute left-0 inset-y-0 flex items-center pl-3">
+                        <i data-lucide="log-in" class="h-5 w-5 text-red-300 group-hover:text-white"></i>
+                    </span>
+                    Se connecter
+                </button>
+            </form>
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        lucide.createIcons();
+    });
+</script>
 {% endblock %}

@@ -2,21 +2,31 @@
 
 {% block content %}
 <div class="bg-slate-800 rounded-lg shadow-lg p-6">
-    <h1 class="text-2xl font-bold text-white mb-6">Delete Manager</h1>
+    <h1 class="text-2xl font-bold text-white mb-6 flex items-center">
+        <i data-lucide="user-minus" class="h-6 w-6 mr-2 text-red-500"></i>
+        Supprimer le gestionnaire
+    </h1>
 
     <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-6" role="alert">
-        <strong class="font-bold">Warning!</strong>
-        <p class="block sm:inline">Are you sure you want to delete {{ object.email }}? This action cannot be undone.</p>
+        <strong class="font-bold flex items-center">
+            <i data-lucide="alert-triangle" class="h-5 w-5 mr-2"></i>
+            Attention !
+        </strong>
+        <p class="block sm:inline mt-2">
+            Êtes-vous sûr de vouloir supprimer {{ object.email }} ? Cette action est irréversible.
+        </p>
     </div>
 
     <form method="post" class="space-y-6">
         {% csrf_token %}
         <div class="flex justify-end space-x-4">
-            <a href="{% url 'manager_list' %}" class="bg-slate-700 text-white px-4 py-2 rounded-lg hover:bg-slate-600 transition-colors">
-                Cancel
+            <a href="{% url 'manager_list' %}" class="bg-slate-700 text-white px-4 py-2 rounded-lg hover:bg-slate-600 transition-colors flex items-center">
+                <i data-lucide="x" class="h-4 w-4 mr-2"></i>
+                Annuler
             </a>
-            <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors">
-                Confirm Delete
+            <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors flex items-center">
+                <i data-lucide="trash-2" class="h-4 w-4 mr-2"></i>
+                Confirmer la suppression
             </button>
         </div>
     </form>
