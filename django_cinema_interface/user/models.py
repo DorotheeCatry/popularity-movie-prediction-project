@@ -1,11 +1,7 @@
 from django.db import models
-
-# Create your models here.
 from django.contrib.auth.models import AbstractUser, BaseUserManager
-
 from typing import Optional
 
-# User Management Models
 class UserManager(BaseUserManager):
     """
     Custom User Manager to handle user creation and superuser creation.
@@ -18,7 +14,7 @@ class UserManager(BaseUserManager):
             raise ValueError('The Email field must be set')
         email = self.normalize_email(email)
         extra_fields.setdefault('is_staff', True)
-        extra_fields.setdefault('role', 'manager')  # Default role is client
+        extra_fields.setdefault('role', 'manager')  # Default role is manager in manager methods
         user = self.model(email=email, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
@@ -27,20 +23,20 @@ class UserManager(BaseUserManager):
     def create_superuser(self, email: str, password: Optional[str] = None, **extra_fields) -> 'User':
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
-        extra_fields.setdefault('role', 'admin')  # Superusers are advisors
+        extra_fields.setdefault('role', 'admin')  # Superusers are admins
         return self.create_user(email, password, **extra_fields)
 
 class User(AbstractUser):
     """
     Custom user model extending Django's AbstractUser.
     
-    Adds role-based authentication and email as the primary identifier.
+    Adds role-based authentication and uses email as the primary identifier.
     """
     ROLE_CHOICES = (
         ('manager', 'Manager'),
         ('admin', 'Administrateur'),
     )
-    role = models.CharField(max_length=10, choices=ROLE_CHOICES)
+    role = models.CharField(max_length=10, choices=ROLE_CHOICES, default='manager')
     email = models.EmailField(unique=True)  # Email as unique identifier
     temp_password_reset_required = models.BooleanField(default=True)
 
@@ -59,4 +55,3 @@ class User(AbstractUser):
 
     def __str__(self):
         return f"{self.email} ({self.role})"
-

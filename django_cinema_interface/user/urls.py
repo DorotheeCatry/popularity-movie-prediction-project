@@ -1,4 +1,8 @@
+
+# This is the URL configuration for the user app in a Django project.
 from django.urls import path
+from django.contrib.auth.views import LogoutView
+from django.urls import reverse_lazy
 from .views import (
     CustomLoginView,
     ForcePasswordChangeView,
@@ -14,6 +18,7 @@ urlpatterns = [
     # Authentication URLs
     path('login/', CustomLoginView.as_view(), name='login'),
     path('password-change/', ForcePasswordChangeView.as_view(), name='force_password_change'),
+    path('logout/', LogoutView.as_view(next_page=reverse_lazy('login')), name='logout'),
     path('forgot-password/', ForgotPasswordView.as_view(), name='forgot_password'),
     
     # Admin management of managers (only accessible by admin)

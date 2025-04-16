@@ -12,17 +12,36 @@ from .models import User
 from .forms import CustomUserCreationForm, CustomUserUpdateForm, CustomPasswordChangeForm
 
 class CustomLoginView(LoginView):
-    """
-    Custom Login view.
-    If the user logs in with a temporary password, they are redirected to force a password change.
-    """
     template_name = 'user/login.html'
-    
+
+    def dispatch(self, request, *args, **kwargs):
+        """
+        Dispatch the request based on user authentication status.
+
+        If the user is already authenticated, redirect them to the home page.
+        Otherwise, proceed with the default dispatch behavior.
+        """
+        # If user is already authenticated, send them to home.
+        if request.user.is_authenticated:
+            return redirect('home')
+        return super().dispatch(request, *args, **kwargs)
+
     def form_valid(self, form):
+        """
+        Handle a valid login form submission.
+
+        If the user is a manager with a temporary password, redirect them to change it.
+        Otherwise, redirect to the home page.
+        """
+        # Log in the user normally.
         response = super().form_valid(form)
-        if self.request.user.temp_password_reset_required:
+        user = self.request.user
+        # Only for managers with a temporary password, force password change.
+        if user.role == 'manager' and user.temp_password_reset_required:
             return redirect('force_password_change')
-        return response
+        # Otherwise, send the user to home.
+        return redirect('home')
+
 
 class ForcePasswordChangeView(LoginRequiredMixin, PasswordChangeView):
     """
