@@ -1,0 +1,68 @@
+import scrapy
+from scrapy import Field
+import scrapy.item
+
+class AllocineScraperParsingItem(scrapy.Item):
+    title = Field()
+    original_title = Field()
+    release_date = Field()
+    duration = Field()
+    genres = Field()
+    press_rating = Field()
+    audience_rating = Field()
+    director = Field()
+    writer = Field()
+    audience = Field()
+    distributor = Field()
+    movie_type = Field()
+    nationality = Field()
+    languages = Field()
+    synopsis = Field()
+    actors = Field()
+    box_office_fr = Field()
+    box_office_us = Field()
+    image_url = Field()
+
+class MovieReleaseScraperParsingItem(scrapy.Item):
+    title = Field()
+    original_title = Field()
+    release_date = Field()
+    duration = Field()
+    genres = Field()
+    press_rating = Field()
+    audience_rating = Field()
+    director = Field()
+    writer = Field()
+    audience = Field()
+    distributor = Field()
+    movie_type = Field()
+    nationality = Field()
+    languages = Field()
+    synopsis = Field()
+    actors = Field()
+    box_office_fr = Field()
+    box_office_us = Field()
+    image_url = Field()
+    
+class MovieSuccessScraperItem(scrapy.Item):
+    title = Field()
+    url = Field()
+    release_date = Field()
+    director = Field()
+    genre = Field()
+    classification = Field()
+    distributor = Field()
+    country = Field()
+    
+    total_us_revenue = Field()
+    avg_us_revenue = Field()
+    total_world_revenue = Field()
+    avg_world_revenue = Field()
+    
+    total_france_entries = Field()
+    weekly_entries = Field()
+    
+    most_popular_film = Field()
+    most_popular_film_entries = Field()
+
+    actors = Field()

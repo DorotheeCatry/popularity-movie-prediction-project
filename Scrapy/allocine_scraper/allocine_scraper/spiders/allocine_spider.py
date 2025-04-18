@@ -23,7 +23,7 @@ class AllocineSpider(CrawlSpider):
     """
     name = "allocinespider"
     allowed_domains = ["allocine.fr"]
-    start_urls = ["https://allocine.fr/films/?page=" + str(x) for x in range(1, 2000)]
+    start_urls = ["https://allocine.fr/films/?page=" + str(x) for x in range(1, 8000)]
     custom_settings = {
     'ITEM_PIPELINES' : {
         "allocine_scraper.pipelines.AllocineDatabasePipeline": 300
@@ -41,52 +41,74 @@ class AllocineSpider(CrawlSpider):
         if 'Box Office' in header:
             item = AllocineScraperParsingItem()
 
+            # Title
             item['title'] = response.xpath("//div[@class='titlebar-title titlebar-title-xl']/text()").get()
+            item['title'] = item['title'].strip() if item['title'] else None
+
+            # Original title
             item['original_title'] = response.xpath('//span[normalize-space(text())="Titre original"]/following-sibling::span/text()').get()
             item['original_title'] = item['original_title'].strip() if item['original_title'] else None
 
+            # Release date
             item['release_date'] = response.xpath('//*[contains(@class, "date")]/text()').get()
             item['release_date'] = item['release_date'].strip() if item['release_date'] else None
 
+            # Duration
             item['duration'] = response.xpath("//div[@class='meta-body-item meta-body-info']//text()[contains(., 'h') and contains(., 'min')]").get()
             item['duration'] = item['duration'].strip() if item['duration'] else None
 
+            # Genres
             item['genres'] = response.xpath("//div[contains(@class, 'meta-body-info')]//span[contains(@class, 'dark-grey-link')]/text()").getall()
-            item['genres'] = item['genres'] if item['genres'] else None
+            item['genres'] = [genre.strip() for genre in item['genres']] if item['genres'] else None
 
+            # Ratings (press rating and audience rating)
             ratings = response.xpath("//div[@class='stareval stareval-small stareval-theme-default']/span[@class='stareval-note']/text()").getall()
-            item['press_rating'] = ratings[0] if len(ratings) > 0 else None
-            item['audience_rating'] = ratings[1] if len(ratings) > 1 else None
+            if ratings:
+                item['press_rating'] = ratings[0].strip() if ratings[0] else None
+                item['audience_rating'] = ratings[1].strip() if len(ratings) > 1 else None
+            else:
+                item['press_rating'] = item['audience_rating'] = None
 
+            # Director
             item['director'] = response.xpath("//div[@class='meta-body-item meta-body-direction meta-body-oneline']/span[normalize-space(text())='De']/following-sibling::span/text()").getall()
-            item['director'] = item['director'] if item['director'] else None
+            item['director'] = [director.strip() for director in item['director']] if item['director'] else None
 
+            # Writer
             item['writer'] = response.xpath("//div[@class='meta-body-item meta-body-direction meta-body-oneline']/span[normalize-space(text())='Par']/following-sibling::span/text()").getall()
-            item['writer'] = item['writer'] if item['writer'] else None
+            item['writer'] = [writer.strip() for writer in item['writer']] if item['writer'] else None
 
+            # Audience
             item['audience'] = response.xpath("//div[@class='certificate']/span[@class='certificate-text']/text()").get()
-            item['audience'] = item['audience'] if item['audience'] else None
+            item['audience'] = item['audience'].strip() if item['audience'] else None
 
+            # Distributor
             item['distributor'] = response.xpath("//section[@class='section ovw ovw-technical']//span[text()='Distributeur']/following-sibling::span/text()").get()
-            item['distributor'] = item['distributor'] if item['distributor'] else None
+            item['distributor'] = item['distributor'].strip() if item['distributor'] else None
 
+            # Movie type
             item['movie_type'] = response.xpath("//section[@class='section ovw ovw-technical']//span[text()='Type de film']/following-sibling::span/text()").get()
-            item['movie_type'] = item['movie_type'] if item['movie_type'] else None
+            item['movie_type'] = item['movie_type'].strip() if item['movie_type'] else None
 
+            # Nationality
             item['nationality'] = response.css("div.item span.what.light:contains('Nationalité') + span span.nationality::text").getall()
-            item['nationality'] = item['nationality'] if item['nationality'] else None
+            item['nationality'] = [nationality.strip() for nationality in item['nationality']] if item['nationality'] else None
 
+            # Languages
             item['languages'] = response.xpath("//section[@class='section ovw ovw-technical']//span[text()='Langues']/following-sibling::span/text()").getall()
             item['languages'] = [lang.strip() for lang in item['languages']] if item['languages'] else None
 
+            # Synopsis
             item['synopsis'] = response.xpath("//p[@class='bo-p']/text()").get()
-            item['synopsis'] = item['synopsis'] if item['synopsis'] else None
+            item['synopsis'] = item['synopsis'].strip() if item['synopsis'] else None
 
+            # Actors
             item['actors'] = response.xpath("//div[contains(@class, 'meta-body-item meta-body-actor')]//span[contains(@class, 'dark-grey-link')]/text()").getall()
-            item['actors'] = item['actors'] if item['actors'] else None
+            item['actors'] = [actor.strip() for actor in item['actors']] if item['actors'] else None
 
+            # Image URL
             item['image_url'] = response.xpath("//img[@class='thumbnail-img']/@src").get()
-            item['image_url'] = item['image_url'] if item['image_url'] else None
+            item['image_url'] = item['image_url'].strip() if item['image_url'] else None
+
 
             # Retrieve the Box Office URL
             boxoffice_url = response.url.replace('_gen_cfilm=', '-').replace('.html', '/box-office/')
