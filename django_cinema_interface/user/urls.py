@@ -29,3 +29,5 @@ urlpatterns = [
     # Home view after login
     path('home/', HomeView.as_view(), name='home'),
 ]
+
+

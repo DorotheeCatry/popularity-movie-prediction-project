@@ -1,56 +1,56 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="bg-slate-800 rounded-lg shadow-lg p-6">
+<div class="bg-gray-900/50 rounded-lg shadow-lg p-6 border border-[#7F95D1]/20">
     <div class="flex justify-between items-center mb-6">
-        <h1 class="text-2xl font-bold text-white flex items-center">
-            <i data-lucide="users" class="h-6 w-6 mr-2 text-red-500"></i>
+        <h1 class="text-2xl font-bold text-[#FBFEF9] flex items-center">
+            <i data-lucide="users" class="h-6 w-6 mr-2 text-[#A63446]"></i>
             Gestion des utilisateurs
         </h1>
-        <a href="{% url 'manager_add' %}" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors flex items-center">
+        <a href="{% url 'manager_add' %}" class="bg-[#A63446] text-[#FBFEF9] px-4 py-2 rounded-lg hover:bg-[#A63446]/90 transition-colors flex items-center">
             <i data-lucide="user-plus" class="h-4 w-4 mr-2"></i>
             Ajouter un gestionnaire
         </a>
     </div>
 
     <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-slate-700">
-            <thead class="bg-slate-700">
+        <table class="min-w-full divide-y divide-[#7F95D1]/20">
+            <thead class="bg-gray-900">
                 <tr>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Nom</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Email</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Statut</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">Actions</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-[#7F95D1] uppercase tracking-wider">Nom</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-[#7F95D1] uppercase tracking-wider">Email</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-[#7F95D1] uppercase tracking-wider">Statut</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-[#7F95D1] uppercase tracking-wider">Actions</th>
                 </tr>
             </thead>
-            <tbody class="bg-slate-800 divide-y divide-slate-700">
+            <tbody class="bg-gray-900/50 divide-y divide-[#7F95D1]/20">
                 {% for manager in managers %}
                 <tr>
                     <td class="px-6 py-4 whitespace-nowrap">
                         <div class="flex items-center">
-                            <i data-lucide="user" class="h-4 w-4 text-gray-400 mr-2"></i>
-                            <div class="text-sm font-medium text-white">{{ manager.get_full_name|default:"Non défini" }}</div>
+                            <i data-lucide="user" class="h-4 w-4 text-[#7F95D1] mr-2"></i>
+                            <div class="text-sm font-medium text-[#FBFEF9]">{{ manager.get_full_name|default:"Non défini" }}</div>
                         </div>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-300 flex items-center">
-                            <i data-lucide="mail" class="h-4 w-4 text-gray-400 mr-2"></i>
+                        <div class="text-sm text-[#7F95D1] flex items-center">
+                            <i data-lucide="mail" class="h-4 w-4 text-[#7F95D1] mr-2"></i>
                             {{ manager.email }}
                         </div>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
-                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {% if manager.is_active %}bg-green-100 text-green-800{% else %}bg-red-100 text-red-800{% endif %}">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {% if manager.is_active %}bg-green-100 text-green-800 {% else %}bg-[#A63446]/10 text-[#A63446]{% endif %}">
                             <i data-lucide="{% if manager.is_active %}check-circle{% else %}x-circle{% endif %}" class="h-4 w-4 mr-1"></i>
                             {{ manager.is_active|yesno:"Actif,Inactif" }}
                         </span>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         <div class="flex space-x-4">
-                            <a href="{% url 'manager_edit' manager.pk %}" class="text-red-500 hover:text-red-400 flex items-center">
+                            <a href="{% url 'manager_edit' manager.pk %}" class="text-[#A63446] hover:text-[#A63446]/80 flex items-center">
                                 <i data-lucide="edit" class="h-4 w-4 mr-1"></i>
                                 Modifier
                             </a>
-                            <a href="{% url 'manager_delete' manager.pk %}" class="text-gray-300 hover:text-white flex items-center">
+                            <a href="{% url 'manager_delete' manager.pk %}" class="text-[#7F95D1] hover:text-[#FBFEF9] flex items-center">
                                 <i data-lucide="trash-2" class="h-4 w-4 mr-1"></i>
                                 Supprimer
                             </a>
@@ -59,7 +59,7 @@
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="4" class="px-6 py-4 whitespace-nowrap text-sm text-gray-300 text-center">
+                    <td colspan="4" class="px-6 py-4 whitespace-nowrap text-sm text-[#7F95D1] text-center">
                         <div class="flex items-center justify-center">
                             <i data-lucide="inbox" class="h-5 w-5 mr-2"></i>
                             Aucun gestionnaire trouvé
