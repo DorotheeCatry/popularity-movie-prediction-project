@@ -157,13 +157,14 @@ class HomeView(TemplateView):
         """
         ctx       = super().get_context_data(**kwargs)
         today     = timezone.localdate()
-        monday    = today - datetime.timedelta(days=today.weekday())
+        days_ahead = (2 - today.weekday() + 7) % 7  # 2 = Wednesday
+        week_start = today + datetime.timedelta(days=days_ahead)
 
         # —––––––––––––––––––––––––––––––––––––––––––––––
-        # 1) Fetch this week’s programs (if any)
+        # 1) Fetch this week’s programs (starting from Wednesday)
         programs  = (
             WeeklyProgram.objects
-                         .filter(week_start=monday)
+                         .filter(week_start=week_start)
                          .select_related("room", "movie")
         )
         ctx["programs"] = programs
