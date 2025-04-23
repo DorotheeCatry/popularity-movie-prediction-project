@@ -8,6 +8,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Movie, WeeklyProgram, DailyEntry, Room
 from .forms import ProgramForm, DailyEntryForm
 from datetime import date, timedelta
+from django.db.models import F, ExpressionWrapper, FloatField
+from movie_prediction.models import DailyEntry
 # from .ml import load_model, predict
 
 class MovieListView(LoginRequiredMixin, generic.ListView):
@@ -43,7 +45,17 @@ class DailyEntryListView(LoginRequiredMixin, generic.ListView):
     context_object_name = 'entries'
 
     def get_queryset(self):
-        return DailyEntry.objects.order_by('-date')
+        return (
+            DailyEntry.objects
+                .select_related('room')
+                .annotate(
+                    fill_rate=ExpressionWrapper(
+                        F('entrances') * 100.0 / F('room__capacity'),
+                        output_field=FloatField(),
+                    )
+                )
+                .order_by('-date', 'room__name')
+        )
 
 @login_required
 def assign_best_films(request):

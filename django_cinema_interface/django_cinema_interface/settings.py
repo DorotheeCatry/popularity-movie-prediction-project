@@ -34,7 +34,8 @@ INSTALLED_APPS = [
     'theme',
     'django_browser_reload',
     'user',
-    'movie_prediction'
+    'movie_prediction',
+    'widget_tweaks',
 ]
 
 MIDDLEWARE = [

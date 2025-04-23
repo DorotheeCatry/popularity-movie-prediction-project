@@ -10,6 +10,10 @@ from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from django.contrib import messages
 from .models import User
 from .forms import CustomUserCreationForm, CustomUserUpdateForm, CustomPasswordChangeForm
+import datetime
+from django.utils import timezone
+from django.db.models import Sum
+from movie_prediction.models import WeeklyProgram, DailyEntry, Room
 
 class CustomLoginView(LoginView):
     template_name = 'user/login.html'
@@ -134,9 +138,73 @@ class ManagerDeleteView(AdminRequiredMixin, DeleteView):
         return User.objects.filter(role='manager')
 
 
+
 class HomeView(TemplateView):
     """
-    A simple home view that acts as the landing page after login.
-    More details and features will be implemented later.
+    Prepare context data for the home view.
+
+    This view calculates and provides data for the home page, including weekly programs,
+    total entries, occupation rate, best movie, and prediction increase.
     """
     template_name = "user/home.html"
+
+    def get_context_data(self, **kwargs):
+        """
+        Get the context data for the home view.
+
+        Calculates various statistics about movie entries and predictions,
+        and adds them to the context.
+        """
+        ctx       = super().get_context_data(**kwargs)
+        today     = timezone.localdate()
+        monday    = today - datetime.timedelta(days=today.weekday())
+
+        # —––––––––––––––––––––––––––––––––––––––––––––––
+        # 1) Fetch this week’s programs (if any)
+        programs  = (
+            WeeklyProgram.objects
+                         .filter(week_start=monday)
+                         .select_related("room", "movie")
+        )
+        ctx["programs"] = programs
+
+        # —––––––––––––––––––––––––––––––––––––––––––––––
+        # 2) Sum up today’s actual entries
+        daily_qs      = DailyEntry.objects.filter(date=today).select_related("room")
+        total_entries = daily_qs.aggregate(total=Sum("entrances"))["total"] or 0
+        ctx["total_entries"] = total_entries
+
+        # —––––––––––––––––––––––––––––––––––––––––––––––
+        # 3) Compute capacity base:
+        #    • If you have programs, use their rooms’ capacities.
+        #    • Otherwise fall back to sum of all Room capacities.
+        if programs.exists():
+            cap = sum(p.room.capacity for p in programs)
+        else:
+            cap = Room.objects.aggregate(total=Sum("capacity"))["total"] or 1
+        ctx["occupation_rate"] = round(total_entries / cap * 100, 1)
+
+        # —––––––––––––––––––––––––––––––––––––––––––––––
+        # 4) Pick today’s “best movie” (highest entrances):
+        if programs.exists() and daily_qs.exists():
+            # Map room → movie for quick lookup
+            room_map  = {p.room_id: p.movie for p in programs}
+            top_entry = daily_qs.order_by("-entrances").first()
+            best_movie = room_map.get(top_entry.room_id)
+        else:
+            best_movie = None
+        ctx["best_movie"] = best_movie
+
+        # —––––––––––––––––––––––––––––––––––––––––––––––
+        # 5) Prediction increase:
+        #    only if you actually have programs *and* some entries today
+        if programs.exists() and total_entries:
+            predicted = sum((p.movie.number_entrances_fr or 0) for p in programs)
+            ctx["prediction_increase"] = round(
+                (predicted - total_entries) / total_entries * 100, 1
+            )
+        else:
+            ctx["prediction_increase"] = 0
+
+        return ctx
+

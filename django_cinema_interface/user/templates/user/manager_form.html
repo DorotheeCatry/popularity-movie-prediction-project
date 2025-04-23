@@ -1,50 +1,54 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="bg-gray-900/50 rounded-lg shadow-lg p-6 border border-[#7F95D1]/20">
-    <h1 class="text-2xl font-bold text-[#FBFEF9] mb-6 flex items-center">
+<div class="bg-gray-900/50 rounded-lg shadow-lg p-8 border border-[#FBFEF9]/20">
+    <h1 class="text-2xl font-bold text-[#FBFEF9] mb-8 flex items-center">
         <i data-lucide="{% if form.instance.pk %}user-cog{% else %}user-plus{% endif %}" class="h-6 w-6 mr-2 text-[#A63446]"></i>
         {% if form.instance.pk %}Modifier{% else %}Ajouter{% endif %} un gestionnaire
     </h1>
 
-    <form method="post" class="space-y-6">
+    <form method="post" class="space-y-8">
         {% csrf_token %}
         
         {% for field in form %}
-        <div class="space-y-1">
-            <label for="{{ field.id_for_label }}" class="text-sm font-medium text-[#7F95D1] flex items-center">
+        <div class="space-y-2">
+            <label for="{{ field.id_for_label }}" class="text-sm font-medium text-[#FBFEF9] flex items-center">
                 <i data-lucide="{% if field.name == 'email' %}mail{% elif field.name == 'username' %}at-sign{% elif field.name == 'first_name' %}user{% elif field.name == 'last_name' %}users{% endif %}" class="h-4 w-4 mr-2"></i>
                 {{ field.label }}
             </label>
-            <input type="{{ field.field.widget.input_type }}" 
-                   name="{{ field.name }}" 
-                   id="{{ field.id_for_label }}"
-                   {% if field.value %}value="{{ field.value }}"{% endif %}
-                   class="mt-1 block w-full rounded-md border border-[#7F95D1]/30 bg-gray-900 text-[#FBFEF9] shadow-sm focus:border-[#A63446] focus:ring-[#A63446] sm:text-sm pl-10"
-                   {% if field.field.required %}required{% endif %}
-                   placeholder="{% if field.name == 'email' %}exemple@cinema.fr{% elif field.name == 'username' %}nomutilisateur{% elif field.name == 'first_name' %}Prénom{% elif field.name == 'last_name' %}Nom{% elif field.name == 'password1' %}Votre mot de passe{% endif %}">
+            <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <i data-lucide="{% if field.name == 'email' %}mail{% elif field.name == 'username' %}at-sign{% elif field.name == 'first_name' %}user{% elif field.name == 'last_name' %}users{% endif %}" class="h-5 w-5 text-[#FBFEF9]"></i>
+                </div>
+                <input type="{{ field.field.widget.input_type }}" 
+                       name="{{ field.name }}" 
+                       id="{{ field.id_for_label }}"
+                       {% if field.value %}value="{{ field.value }}"{% endif %}
+                       class="pl-10 appearance-none rounded-lg relative block w-full px-3 py-3 border border-[#FBFEF9]/30 bg-gray-200 text-gray-900 placeholder-gray-900/50 focus:outline-none focus:ring-2 focus:ring-[#A63446] focus:border-[#A63446] sm:text-sm shadow-sm"
+                       {% if field.field.required %}required{% endif %}
+                       placeholder="{% if field.name == 'email' %}exemple@cinema.fr{% elif field.name == 'username' %}Nom utilisateur{% elif field.name == 'first_name' %}Prénom{% elif field.name == 'last_name' %}Nom{% elif field.name == 'password1' %}Votre mot de passe{% endif %}">
+            </div>
             {% if field.errors %}
-            <p class="text-[#A63446] text-xs mt-1 flex items-center">
+            <p class="text-[#A63446] text-sm mt-2 flex items-center">
                 <i data-lucide="alert-circle" class="h-4 w-4 mr-1"></i>
                 {{ field.errors.0 }}
             </p>
             {% endif %}
             {% if field.help_text %}
-            <div class="mt-2 text-sm text-[#7F95D1]/80 flex items-start">
-                <i data-lucide="info" class="h-4 w-4 mr-2 self-start mt-1 "></i>
-                {{ field.help_text|safe }}
-                
+            <div class="mt-3 text-sm text-[#FBFEF9] flex items-start bg-gray-200/50 p-4 rounded-lg border border-[#FBFEF9]/10">
+                <i data-lucide="info" class="h-4 w-4 mr-2 self-start mt-0.5"></i>
+                <div>{{ field.help_text|safe }}</div>
             </div>
             {% endif %}
         </div>
         {% endfor %}
 
-        <div class="flex justify-end space-x-4">
-            <a href="{% url 'manager_list' %}" class="bg-gray-900 text-[#FBFEF9] px-4 py-2 rounded-lg hover:bg-gray-900/70 transition-colors flex items-center border border-[#7F95D1]/20">
+        <div class="flex justify-end space-x-4 pt-4">
+            <a href="{% url 'manager_list' %}" class="bg-gray-900 text-[#FBFEF9] px-6 py-3 rounded-lg hover:bg-gray-900/70 transition-colors flex items-center border border-[#FBFEF9]/20">
                 <i data-lucide="x" class="h-4 w-4 mr-2"></i>
                 Annuler
             </a>
-            <button type="submit" class="bg-[#A63446] text-[#FBFEF9] px-4 py-2 rounded-lg hover:bg-[#A63446]/90 transition-colors flex items-center">
+            <button type="submit" class="bg-[#A63446] text-[#FBFEF9] px-6 py-3 rounded-lg hover:bg-[#A63446]/90 transition-colors flex items-center">
                 <i data-lucide="{% if form.instance.pk %}save{% else %}user-plus{% endif %}" class="h-4 w-4 mr-2"></i>
                 {% if form.instance.pk %}Mettre à jour{% else %}Créer{% endif %} le gestionnaire
             </button>

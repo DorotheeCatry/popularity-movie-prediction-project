@@ -46,14 +46,17 @@
                         </div>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
-                        {% with ratio=entry.entrances|divisibleby:entry.room.capacity %}
-                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                   {% if ratio >= 0.9 %}bg-green-100 text-green-800
-                                   {% elif ratio >= 0.7 %}bg-[#BC8034]/10 text-[#BC8034]
-                                   {% else %}bg-[#A63446]/10 text-[#A63446]{% endif %}">
-                            {{ ratio|floatformat:1 }}%
+                        <span
+                          class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
+                          {% if entry.fill_rate >= 90 %}
+                            bg-green-100 text-green-800
+                          {% elif entry.fill_rate >= 70 %}
+                            bg-[#BC8034]/10 text-[#BC8034]
+                          {% else %}
+                            bg-[#A63446]/10 text-[#A63446]
+                          {% endif %}">
+                            {{ entry.fill_rate|floatformat:1 }}%
                         </span>
-                        {% endwith %}
                     </td>
                 </tr>
                 {% empty %}
