@@ -22,7 +22,7 @@
                    {% if field.value %}value="{{ field.value }}"{% endif %}
                    class="mt-1 block w-full rounded-md border border-[#7F95D1]/30 bg-gray-900 text-[#FBFEF9] shadow-sm focus:border-[#A63446] focus:ring-[#A63446] sm:text-sm pl-10"
                    {% if field.field.required %}required{% endif %}
-                   placeholder="{% if field.name == 'email' %}exemple@cinema.fr{% elif field.name == 'username' %}nomutilisateur{% elif field.name == 'first_name' %}Prénom{% elif field.name == 'last_name' %}Nom{% endif %}">
+                   placeholder="{% if field.name == 'email' %}exemple@cinema.fr{% elif field.name == 'username' %}nomutilisateur{% elif field.name == 'first_name' %}Prénom{% elif field.name == 'last_name' %}Nom{% elif field.name == 'password1' %}Votre mot de passe{% endif %}">
             {% if field.errors %}
             <p class="text-[#A63446] text-xs mt-1 flex items-center">
                 <i data-lucide="alert-circle" class="h-4 w-4 mr-1"></i>
@@ -30,10 +30,11 @@
             </p>
             {% endif %}
             {% if field.help_text %}
-            <p class="mt-2 text-sm text-[#7F95D1]/80 flex items-center">
-                <i data-lucide="info" class="h-4 w-4 mr-1"></i>
-                {{ field.help_text }}
-            </p>
+            <div class="mt-2 text-sm text-[#7F95D1]/80 flex items-start">
+                <i data-lucide="info" class="h-4 w-4 mr-2 self-start mt-1 "></i>
+                {{ field.help_text|safe }}
+                
+            </div>
             {% endif %}
         </div>
         {% endfor %}
