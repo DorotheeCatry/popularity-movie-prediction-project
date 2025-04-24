@@ -1,0 +1,35 @@
+<div class="space-y-6">
+    {% for program in programs %}
+      <div class="bg-gray-900/50 rounded-lg p-6 border border-[#7F95D1]/20 shadow-md">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center">
+          <div>
+            <h3 class="text-lg font-semibold text-[#FBFEF9]">
+              {{ program.room.name }} ({{ program.room.capacity }} places)
+            </h3>
+            <p class="text-[#7F95D1] text-sm mt-1">{{ program.movie.title }}</p>
+          </div>
+          <div class="text-right mt-4 sm:mt-0">
+            {% with entries=program.room.dailyentry_set.all %}
+              {% if entries %}
+                <p class="text-[#A63446] font-semibold flex items-center justify-end">
+                  <i data-lucide="users" class="h-4 w-4 mr-1"></i>
+                  {{ entries.first.entrances }}/{{ program.room.capacity }}
+                </p>
+              {% endif %}
+            {% endwith %}
+            {% if program.movie.number_entrances_fr %}
+              <p class="text-sm text-[#7F95D1] flex items-center justify-end mt-2">
+                <i data-lucide="ticket" class="h-4 w-4 mr-1"></i>
+                Prévision: {{ program.movie.number_entrances_fr }}
+              </p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    {% empty %}
+      <div class="text-center py-6 text-[#7F95D1] bg-gray-900/50 rounded-lg border border-[#7F95D1]/20">
+        <i data-lucide="alert-circle" class="h-6 w-6 mb-2"></i>
+        <p class="text-sm font-medium">Aucun programme défini</p>
+      </div>
+    {% endfor %}
+</div>

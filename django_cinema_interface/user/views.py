@@ -155,26 +155,26 @@ class HomeView(TemplateView):
         Calculates various statistics about movie entries and predictions,
         and adds them to the context.
         """
-        ctx       = super().get_context_data(**kwargs)
-        today     = timezone.localdate()
-        monday    = today - datetime.timedelta(days=today.weekday())
+        ctx   = super().get_context_data(**kwargs)
+        today = timezone.localdate()
 
-        # —––––––––––––––––––––––––––––––––––––––––––––––
-        # 1) Fetch this week’s programs (if any)
-        programs  = (
+        # “This week” Wednesday (past or today, never future)
+        days_since_wed = (today.weekday() - 2) % 7  # how many days since Wed
+        week_start     = today - datetime.timedelta(days=days_since_wed)
+
+        # 1) Fetch programs for that Wednesday
+        programs = (
             WeeklyProgram.objects
-                         .filter(week_start=monday)
+                         .filter(week_start=week_start)
                          .select_related("room", "movie")
         )
         ctx["programs"] = programs
 
-        # —––––––––––––––––––––––––––––––––––––––––––––––
         # 2) Sum up today’s actual entries
         daily_qs      = DailyEntry.objects.filter(date=today).select_related("room")
         total_entries = daily_qs.aggregate(total=Sum("entrances"))["total"] or 0
         ctx["total_entries"] = total_entries
 
-        # —––––––––––––––––––––––––––––––––––––––––––––––
         # 3) Compute capacity base:
         #    • If you have programs, use their rooms’ capacities.
         #    • Otherwise fall back to sum of all Room capacities.
@@ -184,7 +184,6 @@ class HomeView(TemplateView):
             cap = Room.objects.aggregate(total=Sum("capacity"))["total"] or 1
         ctx["occupation_rate"] = round(total_entries / cap * 100, 1)
 
-        # —––––––––––––––––––––––––––––––––––––––––––––––
         # 4) Pick today’s “best movie” (highest entrances):
         if programs.exists() and daily_qs.exists():
             # Map room → movie for quick lookup
@@ -195,11 +194,10 @@ class HomeView(TemplateView):
             best_movie = None
         ctx["best_movie"] = best_movie
 
-        # —––––––––––––––––––––––––––––––––––––––––––––––
         # 5) Prediction increase:
         #    only if you actually have programs *and* some entries today
         if programs.exists() and total_entries:
-            predicted = sum((p.movie.number_entrances_fr or 0) for p in programs)
+            predicted = sum((p.movie.number_entrances_fr or 0) for p in programs)/7
             ctx["prediction_increase"] = round(
                 (predicted - total_entries) / total_entries * 100, 1
             )
