@@ -98,7 +98,25 @@
                         <i data-lucide="trending-up" class="h-4 w-4 mr-1"></i>
                         Prévision affluence
                     </p>
-                    <p class="text-2xl font-bold text-[#A63446]">↑ {{ prediction_increase|default:"0" }}%</p>
+
+                    {% with pct=prediction_increase|floatformat:1 %}
+                      <p class="text-2xl font-bold flex items-center">
+                        {% if prediction_increase > 5 %}
+                          <i data-lucide="trending-up" class="h-5 w-5 mr-2 text-[#A63446]"></i>
+                          <span class="text-[#A63446]">{{ pct }} % au-dessus</span>
+
+                        {% elif prediction_increase < -5 %}
+                          <i data-lucide="trending-down" class="h-5 w-5 mr-2 text-[#34A634]"></i>
+                          {% with abs_pct=pct|slice:"1:" %}
+                            <span class="text-[#34A634]">{{ abs_pct }} % en-dessous</span>
+                          {% endwith %}
+
+                        {% else %}
+                          <i data-lucide="activity" class="h-5 w-5 mr-2 text-[#7F95D1]"></i>
+                          <span class="text-[#7F95D1]">{{ pct }} % proche</span>
+                        {% endif %}
+                      </p>
+                    {% endwith %}
                 </div>
             </div>
         </div>
