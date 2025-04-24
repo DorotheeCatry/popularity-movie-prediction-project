@@ -111,7 +111,7 @@ STATIC_URL = '/static_src/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 STATICFILES_DIRS = [
-    BASE_DIR / "static_src",  # Tailwind CSS static files
+    BASE_DIR / "static_src/",  # Tailwind CSS static files
 ]
 
 # Tailwind specific (you probably already have these)
