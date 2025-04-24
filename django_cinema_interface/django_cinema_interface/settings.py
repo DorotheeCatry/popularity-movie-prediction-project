@@ -107,11 +107,11 @@ AUTH_USER_MODEL = 'user.User'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
-STATIC_URL = '/static/'
+STATIC_URL = '/static_src/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 STATICFILES_DIRS = [
-    BASE_DIR / "theme/static",  # Tailwind CSS static files
+    BASE_DIR / "static_src",  # Tailwind CSS static files
 ]
 
 # Tailwind specific (you probably already have these)
@@ -121,3 +121,6 @@ TAILWIND_CSS_PATH = 'css/dist/styles.css'
 LOGIN_URL = '/user/login/'
 LOGIN_REDIRECT_URL = '/user/home/'
 LOGOUT_REDIRECT_URL = '/user/login/'
+
+
+NPM_BIN_PATH = "C:/Program Files/nodejs/npm.cmd"

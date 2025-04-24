@@ -86,3 +86,4 @@ seaborn
 xgboost
 scikit-learn
 jupyter
+widget-tweaks
