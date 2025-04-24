@@ -9,17 +9,17 @@
                 <div class="swiper-slide relative">
                     <img src="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?auto=format&fit=crop&q=80&w=2000" 
                          alt="Cinema" class="absolute inset-0 w-full h-full object-cover">
-                    <div class="absolute inset-0 bg-gradient-to-r from-[#A63446]/80 to-gray-900/50"></div>
+                    <div class="absolute inset-0 bg-gradient-to-r from-[#e11d48]/80 to-gray-900/50"></div>
                 </div>
                 <div class="swiper-slide relative">
                     <img src="https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?auto=format&fit=crop&q=80&w=2000" 
                          alt="Cinema" class="absolute inset-0 w-full h-full object-cover">
-                    <div class="absolute inset-0 bg-gradient-to-r from-[#A63446]/80 to-gray-900/50"></div>
+                    <div class="absolute inset-0 bg-gradient-to-r from-[#e11d48]/80 to-gray-900/50"></div>
                 </div>
                 <div class="swiper-slide relative">
                     <img src="https://images.unsplash.com/photo-1440404653325-ab127d49abc1?auto=format&fit=crop&q=80&w=2000" 
                          alt="Cinema" class="absolute inset-0 w-full h-full object-cover">
-                    <div class="absolute inset-0 bg-gradient-to-r from-[#A63446]/80 to-gray-900/50"></div>
+                    <div class="absolute inset-0 bg-gradient-to-r from-[#e11d48]/80 to-gray-900/50"></div>
                 </div>
             </div>
             <div class="absolute inset-0 flex items-center justify-center z-10">
@@ -56,14 +56,14 @@
         <div class="max-w-md w-full space-y-8">
             <div>
                 <div class="flex justify-center">
-                    <div class="h-16 w-16 bg-[#A63446]/20 rounded-full flex items-center justify-center">
-                        <i data-lucide="clapperboard" class="h-8 w-8 text-[#A63446]"></i>
+                    <div class="h-16 w-16 bg-[#e11d48]/20 rounded-full flex items-center justify-center">
+                        <i data-lucide="clapperboard" class="h-8 w-8 text-[#e11d48]"></i>
                     </div>
                 </div>
                 <h2 class="mt-6 text-center text-3xl font-extrabold text-[#FBFEF9]">
                     Connexion à votre compte
                 </h2>
-                <p class="mt-2 text-center text-sm text-[#7F95D1]">
+                <p class="mt-2 text-center text-sm text-[#bae6fd]">
                     Connectez-vous pour accéder à votre espace CinemaPredict.
                 </p>
             </div>
@@ -71,7 +71,7 @@
             {% if messages %}
             <div>
                 {% for message in messages %}
-                <div class="mb-4 p-3 text-[#FBFEF9] rounded-md flex items-center {% if message.tags == 'success' %}bg-green-500{% else %}bg-[#A63446]{% endif %}">
+                <div class="mb-4 p-3 text-[#FBFEF9] rounded-md flex items-center {% if message.tags == 'success' %}bg-green-500{% else %}bg-[#e11d48]{% endif %}">
                     <i data-lucide="{% if message.tags == 'success' %}check-circle{% else %}alert-circle{% endif %}" class="h-5 w-5 mr-2"></i>
                     {{ message }}
                 </div>
@@ -83,40 +83,40 @@
                 {% csrf_token %}
                 <div class="space-y-4">
                     <div>
-                        <label for="email" class="text-sm font-medium text-[#7F95D1] flex items-center">
+                        <label for="email" class="text-sm font-medium text-[#bae6fd] flex items-center">
                             <i data-lucide="mail" class="h-4 w-4 mr-2"></i>
                             Adresse email
                         </label>
                         <div class="mt-1 relative">
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <i data-lucide="at-sign" class="h-5 w-5 text-[#7F95D1]"></i>
+                                <i data-lucide="at-sign" class="h-5 w-5 text-[#bae6fd]"></i>
                             </div>
                             <input type="email" 
                                    name="username" 
                                    id="email"
                                    required
-                                   class="pl-10 appearance-none rounded-md relative block w-full px-3 py-2 border border-[#7F95D1]/30 bg-gray-900 text-[#FBFEF9] placeholder-[#7F95D1]/50 focus:outline-none focus:ring-[#A63446] focus:border-[#A63446] focus:z-10 sm:text-sm"
+                                   class="pl-10 appearance-none rounded-md relative block w-full px-3 py-2 border border-[#bae6fd]/30 bg-gray-900 text-[#FBFEF9] placeholder-[#bae6fd]/50 focus:outline-none focus:ring-[#e11d48] focus:border-[#e11d48] focus:z-10 sm:text-sm"
                                    placeholder="Entrez votre adresse email">
                         </div>
                     </div>
 
                     <div>
-                        <label for="password" class="text-sm font-medium text-[#7F95D1] flex items-center">
+                        <label for="password" class="text-sm font-medium text-[#bae6fd] flex items-center">
                             <i data-lucide="lock" class="h-4 w-4 mr-2"></i>
                             Mot de passe
                         </label>
                         <div class="mt-1 relative">
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <i data-lucide="key" class="h-5 w-5 text-[#7F95D1]"></i>
+                                <i data-lucide="key" class="h-5 w-5 text-[#bae6fd]"></i>
                             </div>
                             <input type="password" 
                                    name="password" 
                                    id="password"
                                    required
-                                   class="pl-10 appearance-none rounded-md relative block w-full px-3 py-2 border border-[#7F95D1]/30 bg-gray-900 text-[#FBFEF9] placeholder-[#7F95D1]/50 focus:outline-none focus:ring-[#A63446] focus:border-[#A63446] focus:z-10 sm:text-sm"
+                                   class="pl-10 appearance-none rounded-md relative block w-full px-3 py-2 border border-[#bae6fd]/30 bg-gray-900 text-[#FBFEF9] placeholder-[#bae6fd]/50 focus:outline-none focus:ring-[#e11d48] focus:border-[#e11d48] focus:z-10 sm:text-sm"
                                    placeholder="Entrez votre mot de passe">
                         </div>
-                        <p class="mt-2 text-sm text-[#7F95D1]/80 flex items-start">
+                        <p class="mt-2 text-sm text-[#bae6fd]/80 flex items-start">
                             <i data-lucide="info" class="h-4 w-4 mr-1 mt-0.5"></i>
                             <span>Le mot de passe doit contenir au moins 8 caractères, incluant des lettres majuscules, minuscules et des chiffres.</span>
                         </p>
@@ -125,14 +125,14 @@
 
                 <div class="flex items-center justify-between">
                     <div class="text-sm">
-                        <a href="{% url 'forgot_password' %}" class="font-medium text-[#A63446] hover:text-[#A63446]/80 flex items-center">
+                        <a href="{% url 'forgot_password' %}" class="font-medium text-[#e11d48] hover:text-[#e11d48]/80 flex items-center">
                             <i data-lucide="help-circle" class="h-4 w-4 mr-1"></i>
                             Mot de passe oublié ?
                         </a>
                     </div>
                 </div>
 
-                <button type="submit" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-[#FBFEF9] bg-[#A63446] hover:bg-[#A63446]/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#A63446] transition duration-150 ease-in-out">
+                <button type="submit" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-[#FBFEF9] bg-[#e11d48] hover:bg-[#e11d48]/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#e11d48] transition duration-150 ease-in-out">
                     <span class="absolute left-0 inset-y-0 flex items-center pl-3">
                         <i data-lucide="log-in" class="h-5 w-5 text-[#FBFEF9]/80 group-hover:text-[#FBFEF9]"></i>
                     </span>

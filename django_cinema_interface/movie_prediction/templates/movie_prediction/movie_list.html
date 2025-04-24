@@ -1,34 +1,34 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="bg-gray-900/50 rounded-lg shadow-lg p-6 border border-[#7F95D1]/20">
+<div class="bg-gray-900/50 rounded-lg shadow-lg p-6 border border-[#bae6fd]/20">
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-bold text-[#FBFEF9] flex items-center">
-            <i data-lucide="film" class="h-6 w-6 mr-2 text-[#A63446]"></i>
+            <i data-lucide="film" class="h-6 w-6 mr-2 text-[#e11d48]"></i>
             Liste des Films
         </h1>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {% for movie in movies %}
-        <div class="bg-gray-900 rounded-lg overflow-hidden border border-[#7F95D1]/20">
+        <div class="bg-gray-900 rounded-lg overflow-hidden border border-[#bae6fd]/20">
             {% if movie.poster %}
             <img src="{{ movie.poster }}" alt="{{ movie.title }}" class="w-full h-48 object-cover">
             {% else %}
             <div class="w-full h-48 bg-gray-900 flex items-center justify-center">
-                <i data-lucide="film" class="h-12 w-12 text-[#7F95D1]/50"></i>
+                <i data-lucide="film" class="h-12 w-12 text-[#bae6fd]/50"></i>
             </div>
             {% endif %}
             <div class="p-4">
                 <h2 class="text-lg font-semibold text-[#FBFEF9] mb-2">{{ movie.title }}</h2>
-                <p class="text-[#7F95D1] text-sm mb-2 line-clamp-2">{{ movie.synopsis }}</p>
+                <p class="text-[#bae6fd] text-sm mb-2 line-clamp-2">{{ movie.synopsis }}</p>
                 <div class="flex items-center justify-between mt-4">
-                    <div class="flex items-center text-[#7F95D1] text-sm">
+                    <div class="flex items-center text-[#bae6fd] text-sm">
                         <i data-lucide="clock" class="h-4 w-4 mr-1"></i>
                         {{ movie.duration }} min
                     </div>
                     <a href="{% url 'movie_prediction:movie_detail' movie.pk %}" 
-                       class="text-[#A63446] hover:text-[#A63446]/80 flex items-center text-sm font-medium">
+                       class="text-[#e11d48] hover:text-[#e11d48]/80 flex items-center text-sm font-medium">
                         <span>Détails</span>
                         <i data-lucide="chevron-right" class="h-4 w-4 ml-1"></i>
                     </a>
@@ -37,8 +37,8 @@
         </div>
         {% empty %}
         <div class="col-span-full text-center py-8">
-            <i data-lucide="film-off" class="h-12 w-12 text-[#7F95D1]/50 mx-auto mb-4"></i>
-            <p class="text-[#7F95D1]">Aucun film disponible</p>
+            <i data-lucide="film-off" class="h-12 w-12 text-[#bae6fd]/50 mx-auto mb-4"></i>
+            <p class="text-[#bae6fd]">Aucun film disponible</p>
         </div>
         {% endfor %}
     </div>
