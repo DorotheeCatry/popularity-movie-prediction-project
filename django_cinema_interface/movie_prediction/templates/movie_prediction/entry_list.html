@@ -1,40 +1,40 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="bg-gray-900/50 rounded-lg shadow-lg p-6 border border-[#7F95D1]/20">
+<div class="bg-gray-900/50 rounded-lg shadow-lg p-6 border border-[#bae6fd]/20">
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-bold text-[#FBFEF9] flex items-center">
-            <i data-lucide="ticket" class="h-6 w-6 mr-2 text-[#A63446]"></i>
+            <i data-lucide="ticket" class="h-6 w-6 mr-2 text-[#e11d48]"></i>
             Entrées Journalières
         </h1>
         <a href="{% url 'movie_prediction:entry_add' %}" 
-           class="bg-[#A63446] text-[#FBFEF9] px-4 py-2 rounded-lg hover:bg-[#A63446]/90 transition-colors flex items-center">
+           class="bg-[#e11d48] text-[#FBFEF9] px-4 py-2 rounded-lg hover:bg-[#e11d48]/90 transition-colors flex items-center">
             <i data-lucide="plus" class="h-4 w-4 mr-2"></i>
             Ajouter une entrée
         </a>
     </div>
 
     <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-[#7F95D1]/20">
+        <table class="min-w-full divide-y divide-[#bae6fd]/20">
             <thead class="bg-gray-900">
                 <tr>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-[#7F95D1] uppercase tracking-wider">Date</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-[#7F95D1] uppercase tracking-wider">Salle</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-[#7F95D1] uppercase tracking-wider">Entrées</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-[#7F95D1] uppercase tracking-wider">Taux de remplissage</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-[#bae6fd] uppercase tracking-wider">Date</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-[#bae6fd] uppercase tracking-wider">Salle</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-[#bae6fd] uppercase tracking-wider">Entrées</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-[#bae6fd] uppercase tracking-wider">Taux de remplissage</th>
                 </tr>
             </thead>
-            <tbody class="bg-gray-900/50 divide-y divide-[#7F95D1]/20">
+            <tbody class="bg-gray-900/50 divide-y divide-[#bae6fd]/20">
                 {% for entry in entries %}
                 <tr>
                     <td class="px-6 py-4 whitespace-nowrap">
                         <div class="flex items-center">
-                            <i data-lucide="calendar" class="h-4 w-4 text-[#7F95D1] mr-2"></i>
+                            <i data-lucide="calendar" class="h-4 w-4 text-[#bae6fd] mr-2"></i>
                             <div class="text-sm font-medium text-[#FBFEF9]">{{ entry.date|date:"d/m/Y" }}</div>
                         </div>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm text-[#7F95D1] flex items-center">
+                        <div class="text-sm text-[#bae6fd] flex items-center">
                             <i data-lucide="door" class="h-4 w-4 mr-2"></i>
                             {{ entry.room.name }}
                         </div>
@@ -51,9 +51,9 @@
                           {% if entry.fill_rate >= 90 %}
                             bg-green-100 text-green-800
                           {% elif entry.fill_rate >= 70 %}
-                            bg-[#BC8034]/10 text-[#BC8034]
+                            bg-[#fde68a]/10 text-[#fde68a]
                           {% else %}
-                            bg-[#A63446]/10 text-[#A63446]
+                            bg-[#e11d48]/10 text-[#e11d48]
                           {% endif %}">
                             {{ entry.fill_rate|floatformat:1 }}%
                         </span>
@@ -61,7 +61,7 @@
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="4" class="px-6 py-4 whitespace-nowrap text-sm text-[#7F95D1] text-center">
+                    <td colspan="4" class="px-6 py-4 whitespace-nowrap text-sm text-[#bae6fd] text-center">
                         <div class="flex items-center justify-center">
                             <i data-lucide="ticket-off" class="h-5 w-5 mr-2"></i>
                             Aucune entrée trouvée

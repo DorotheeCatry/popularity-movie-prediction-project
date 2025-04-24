@@ -3,7 +3,7 @@
 {% block content %}
 <div class="bg-gray-900/50 rounded-lg shadow-lg p-8 border border-[#FBFEF9]/20">
     <h1 class="text-2xl font-bold text-[#FBFEF9] mb-8 flex items-center">
-        <i data-lucide="{% if form.instance.pk %}user-cog{% else %}user-plus{% endif %}" class="h-6 w-6 mr-2 text-[#A63446]"></i>
+        <i data-lucide="{% if form.instance.pk %}user-cog{% else %}user-plus{% endif %}" class="h-6 w-6 mr-2 text-[#e11d48]"></i>
         {% if form.instance.pk %}Modifier{% else %}Ajouter{% endif %} un gestionnaire
     </h1>
 
@@ -24,12 +24,12 @@
                        name="{{ field.name }}" 
                        id="{{ field.id_for_label }}"
                        {% if field.value %}value="{{ field.value }}"{% endif %}
-                       class="pl-10 appearance-none rounded-lg relative block w-full px-3 py-3 border border-[#FBFEF9]/30 bg-gray-200 text-gray-900 placeholder-gray-900/50 focus:outline-none focus:ring-2 focus:ring-[#A63446] focus:border-[#A63446] sm:text-sm shadow-sm"
+                       class="pl-10 appearance-none rounded-lg relative block w-full px-3 py-3 border border-[#FBFEF9]/30 bg-gray-200 text-gray-900 placeholder-gray-900/50 focus:outline-none focus:ring-2 focus:ring-[#e11d48] focus:border-[#e11d48] sm:text-sm shadow-sm"
                        {% if field.field.required %}required{% endif %}
                        placeholder="{% if field.name == 'email' %}exemple@cinema.fr{% elif field.name == 'username' %}Nom utilisateur{% elif field.name == 'first_name' %}Prénom{% elif field.name == 'last_name' %}Nom{% elif field.name == 'password1' %}Votre mot de passe{% endif %}">
             </div>
             {% if field.errors %}
-            <p class="text-[#A63446] text-sm mt-2 flex items-center">
+            <p class="text-[#e11d48] text-sm mt-2 flex items-center">
                 <i data-lucide="alert-circle" class="h-4 w-4 mr-1"></i>
                 {{ field.errors.0 }}
             </p>
@@ -48,7 +48,7 @@
                 <i data-lucide="x" class="h-4 w-4 mr-2"></i>
                 Annuler
             </a>
-            <button type="submit" class="bg-[#A63446] text-[#FBFEF9] px-6 py-3 rounded-lg hover:bg-[#A63446]/90 transition-colors flex items-center">
+            <button type="submit" class="bg-[#e11d48] text-[#FBFEF9] px-6 py-3 rounded-lg hover:bg-[#e11d48]/90 transition-colors flex items-center">
                 <i data-lucide="{% if form.instance.pk %}save{% else %}user-plus{% endif %}" class="h-4 w-4 mr-2"></i>
                 {% if form.instance.pk %}Mettre à jour{% else %}Créer{% endif %} le gestionnaire
             </button>

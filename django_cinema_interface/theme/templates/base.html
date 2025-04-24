@@ -12,22 +12,22 @@
 <body class="bg-gray-900 min-h-screen">
     <!-- Navigation -->
     {% if user.is_authenticated %}
-    <nav class="bg-gray-900 border-b border-[#7F95D1]/20">
+    <nav class="bg-gray-900 border-b border-[#bae6fd]/20">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
                 <div class="flex items-center">
                     <div class="flex-shrink-0 flex items-center">
-                        <i data-lucide="clapperboard" class="h-8 w-8 text-[#A63446] mr-2"></i>
-                        <span class="text-[#A63446] text-2xl font-bold">CinemaPredict</span>
+                        <i data-lucide="clapperboard" class="h-8 w-8 text-[#e11d48] mr-2"></i>
+                        <span class="text-[#e11d48] text-2xl font-bold">CinemaPredict</span>
                     </div>
                     <div class="hidden md:block">
                         <div class="ml-10 flex items-baseline space-x-4">
-                            <a href="{% url 'home' %}" class="text-[#7F95D1] hover:text-[#FBFEF9] px-3 py-2 rounded-md text-sm font-medium flex items-center">
+                            <a href="{% url 'home' %}" class="text-[#bae6fd] hover:text-[#FBFEF9] px-3 py-2 rounded-md text-sm font-medium flex items-center">
                                 <i data-lucide="home" class="h-4 w-4 mr-2"></i>
                                 Tableau de bord
                             </a>
                             {% if user.role == 'admin' %}
-                            <a href="{% url 'manager_list' %}" class="text-[#7F95D1] hover:text-[#FBFEF9] px-3 py-2 rounded-md text-sm font-medium flex items-center">
+                            <a href="{% url 'manager_list' %}" class="text-[#bae6fd] hover:text-[#FBFEF9] px-3 py-2 rounded-md text-sm font-medium flex items-center">
                                 <i data-lucide="users" class="h-4 w-4 mr-2"></i>
                                 Gérer les utilisateurs
                             </a>
@@ -36,13 +36,13 @@
                     </div>
                 </div>
                 <div class="flex items-center">
-                    <span class="text-[#7F95D1] mr-4 flex items-center">
+                    <span class="text-[#bae6fd] mr-4 flex items-center">
                         <i data-lucide="user" class="h-4 w-4 mr-2"></i>
                         {{ user.email }}
                     </span>
                     <form method="POST" action="{% url 'logout' %}">
                         {% csrf_token %}
-                        <button type="submit" class="text-[#7F95D1] hover:text-[#FBFEF9] px-3 py-2 rounded-md text-sm font-medium flex items-center">
+                        <button type="submit" class="text-[#bae6fd] hover:text-[#FBFEF9] px-3 py-2 rounded-md text-sm font-medium flex items-center">
                             <i data-lucide="log-out" class="h-4 w-4 mr-2"></i>
                             Déconnexion
                         </button>
@@ -58,7 +58,7 @@
         {% if messages %}
         <div class="mb-4">
             {% for message in messages %}
-            <div class="p-4 flex items-center {% if message.tags == 'success' %}bg-green-100 text-green-700{% else %}bg-[#A63446]/10 text-[#A63446]{% endif %} rounded-lg">
+            <div class="p-4 flex items-center {% if message.tags == 'success' %}bg-green-100 text-green-700{% else %}bg-[#e11d48]/10 text-[#e11d48]{% endif %} rounded-lg">
                 <i data-lucide="{% if message.tags == 'success' %}check-circle{% else %}alert-circle{% endif %}" class="h-5 w-5 mr-2"></i>
                 {{ message }}
             </div>

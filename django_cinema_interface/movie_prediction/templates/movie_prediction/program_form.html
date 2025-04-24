@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 {% load widget_tweaks %}
 {% block content %}
-<div class="bg-gray-900/50 rounded-lg shadow-lg p-8 border border-[#7F95D1]/20">
+<div class="bg-gray-900/50 rounded-lg shadow-lg p-8 border border-[#bae6fd]/20">
     <h1 class="text-2xl font-bold text-[#FBFEF9] mb-8 flex items-center">
-        <i data-lucide="calendar-plus" class="h-6 w-6 mr-2 text-[#A63446]"></i>
+        <i data-lucide="calendar-plus" class="h-6 w-6 mr-2 text-[#e11d48]"></i>
         Ajouter un programme
     </h1>
 
@@ -18,12 +18,12 @@
             </label>
             <div class="relative">
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <i data-lucide="{% if field.name == 'week_start' %}calendar{% elif field.name == 'room' %}door{% else %}film{% endif %}" class="h-5 w-5 text-[#7F95D1]"></i>
+                    <i data-lucide="{% if field.name == 'week_start' %}calendar{% elif field.name == 'room' %}door{% else %}film{% endif %}" class="h-5 w-5 text-[#bae6fd]"></i>
                 </div>
-                {{ field|add_class:"pl-10 appearance-none rounded-lg relative block w-full px-3 py-3 border border-[#7F95D1]/30 bg-gray-100 text-gray-900 placeholder-[#7F95D1]/50 focus:outline-none focus:ring-2 focus:ring-[#A63446] focus:border-[#A63446] sm:text-sm shadow-sm" }}
+                {{ field|add_class:"pl-10 appearance-none rounded-lg relative block w-full px-3 py-3 border border-[#bae6fd]/30 bg-gray-100 text-gray-900 placeholder-[#bae6fd]/50 focus:outline-none focus:ring-2 focus:ring-[#e11d48] focus:border-[#e11d48] sm:text-sm shadow-sm" }}
             </div>
             {% if field.errors %}
-            <p class="text-[#A63446] text-sm mt-2 flex items-center">
+            <p class="text-[#e11d48] text-sm mt-2 flex items-center">
                 <i data-lucide="alert-circle" class="h-4 w-4 mr-1"></i>
                 {{ field.errors.0 }}
             </p>
@@ -33,12 +33,12 @@
 
         <div class="flex justify-end space-x-4 pt-4">
             <a href="{% url 'movie_prediction:program_list' %}" 
-               class="bg-gray-900 text-[#FBFEF9] px-6 py-3 rounded-lg hover:bg-gray-900/70 transition-colors flex items-center border border-[#7F95D1]/20">
+               class="bg-gray-900 text-[#FBFEF9] px-6 py-3 rounded-lg hover:bg-gray-900/70 transition-colors flex items-center border border-[#bae6fd]/20">
                 <i data-lucide="x" class="h-4 w-4 mr-2"></i>
                 Annuler
             </a>
             <button type="submit" 
-                    class="bg-[#A63446] text-[#FBFEF9] px-6 py-3 rounded-lg hover:bg-[#A63446]/90 transition-colors flex items-center">
+                    class="bg-[#e11d48] text-[#FBFEF9] px-6 py-3 rounded-lg hover:bg-[#e11d48]/90 transition-colors flex items-center">
                 <i data-lucide="save" class="h-4 w-4 mr-2"></i>
                 Enregistrer
             </button>

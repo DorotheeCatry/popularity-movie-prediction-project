@@ -1,20 +1,20 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="bg-gray-900/50 rounded-lg shadow-lg p-6 border border-[#7F95D1]/20">
+<div class="bg-gray-900/50 rounded-lg shadow-lg p-6 border border-[#bae6fd]/20">
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-bold text-[#FBFEF9] flex items-center">
-            <i data-lucide="calendar" class="h-6 w-6 mr-2 text-[#A63446]"></i>
+            <i data-lucide="calendar" class="h-6 w-6 mr-2 text-[#e11d48]"></i>
             Programme Hebdomadaire
         </h1>
         <div class="flex space-x-4">
             <a href="{% url 'movie_prediction:program_add' %}" 
-               class="bg-[#A63446] text-[#FBFEF9] px-4 py-2 rounded-lg hover:bg-[#A63446]/90 transition-colors flex items-center">
+               class="bg-[#e11d48] text-[#FBFEF9] px-4 py-2 rounded-lg hover:bg-[#e11d48]/90 transition-colors flex items-center">
                 <i data-lucide="plus" class="h-4 w-4 mr-2"></i>
                 Ajouter un programme
             </a>
             <a href="{% url 'movie_prediction:assign_best' %}"
-               class="bg-gray-900 text-[#FBFEF9] px-4 py-2 rounded-lg hover:bg-gray-900/70 transition-colors flex items-center border border-[#7F95D1]/20">
+               class="bg-gray-900 text-[#FBFEF9] px-4 py-2 rounded-lg hover:bg-gray-900/70 transition-colors flex items-center border border-[#bae6fd]/20">
                 <i data-lucide="wand-2" class="h-4 w-4 mr-2"></i>
                 Suggestion automatique
             </a>
@@ -22,26 +22,26 @@
     </div>
 
     <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-[#7F95D1]/20">
+        <table class="min-w-full divide-y divide-[#bae6fd]/20">
             <thead class="bg-gray-900">
                 <tr>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-[#7F95D1] uppercase tracking-wider">Semaine</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-[#7F95D1] uppercase tracking-wider">Salle</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-[#7F95D1] uppercase tracking-wider">Film</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-[#7F95D1] uppercase tracking-wider">Prédiction</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-[#bae6fd] uppercase tracking-wider">Semaine</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-[#bae6fd] uppercase tracking-wider">Salle</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-[#bae6fd] uppercase tracking-wider">Film</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-[#bae6fd] uppercase tracking-wider">Prédiction</th>
                 </tr>
             </thead>
-            <tbody class="bg-gray-900/50 divide-y divide-[#7F95D1]/20">
+            <tbody class="bg-gray-900/50 divide-y divide-[#bae6fd]/20">
                 {% for program in programs %}
                 <tr>
                     <td class="px-6 py-4 whitespace-nowrap">
                         <div class="flex items-center">
-                            <i data-lucide="calendar" class="h-4 w-4 text-[#7F95D1] mr-2"></i>
+                            <i data-lucide="calendar" class="h-4 w-4 text-[#bae6fd] mr-2"></i>
                             <div class="text-sm font-medium text-[#FBFEF9]">{{ program.week_start|date:"d/m/Y" }}</div>
                         </div>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm text-[#7F95D1]">{{ program.room.name }}</div>
+                        <div class="text-sm text-[#bae6fd]">{{ program.room.name }}</div>
                     </td>
                     <td class="px-6 py-4">
                         <div class="flex items-center">
@@ -50,29 +50,29 @@
                                 <img class="h-10 w-10 rounded-full object-cover" src="{{ program.movie.poster }}" alt="">
                                 {% else %}
                                 <div class="h-10 w-10 rounded-full bg-gray-900 flex items-center justify-center">
-                                    <i data-lucide="film" class="h-5 w-5 text-[#7F95D1]"></i>
+                                    <i data-lucide="film" class="h-5 w-5 text-[#bae6fd]"></i>
                                 </div>
                                 {% endif %}
                             </div>
                             <div class="ml-4">
                                 <div class="text-sm font-medium text-[#FBFEF9]">{{ program.movie.title }}</div>
-                                <div class="text-sm text-[#7F95D1]">{{ program.movie.duration }} min</div>
+                                <div class="text-sm text-[#bae6fd]">{{ program.movie.duration }} min</div>
                             </div>
                         </div>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
                         {% if program.movie.number_entrances_fr %}
-                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-[#BC8034]/10 text-[#BC8034]">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-[#fde68a]/10 text-[#fde68a]">
                             {{ program.movie.number_entrances_fr }} entrées
                         </span>
                         {% else %}
-                        <span class="text-[#7F95D1] text-sm">Non disponible</span>
+                        <span class="text-[#bae6fd] text-sm">Non disponible</span>
                         {% endif %}
                     </td>
                 </tr>
                 {% empty %}
                 <tr>
-                    <td colspan="4" class="px-6 py-4 whitespace-nowrap text-sm text-[#7F95D1] text-center">
+                    <td colspan="4" class="px-6 py-4 whitespace-nowrap text-sm text-[#bae6fd] text-center">
                         <div class="flex items-center justify-center">
                             <i data-lucide="calendar-off" class="h-5 w-5 mr-2"></i>
                             Aucun programme trouvé
