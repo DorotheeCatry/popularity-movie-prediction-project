@@ -42,6 +42,11 @@ class MovieReleaseScraperParsingItem(scrapy.Item):
     actors = Field()
     box_office_fr = Field()
     box_office_us = Field()
+    showings = Field()
+    trailer_date = Field()
+    trailer_views = Field()
+    trailer_number = Field()
+    trailer_url = Field()
     image_url = Field()
     
 class MovieSuccessScraperItem(scrapy.Item):

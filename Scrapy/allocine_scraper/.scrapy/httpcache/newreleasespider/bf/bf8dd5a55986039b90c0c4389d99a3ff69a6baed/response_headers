@@ -1,0 +1,17 @@
+Date: Fri, 25 Apr 2025 07:53:04 GMT
+Content-Type: text/html; charset=UTF-8
+Cache-Control: max-age=3600, public, stale-if-error=172800
+Link: <https://assets.allocine.fr/skin/font/icon/font-icon.woff2>; rel="preload"; as="font"; type="font/woff2",<https://assets.allocine.fr/skin/img/allocine/logo-main-grey.5de8867c.svg>; rel="preload"; as="image"; type="image/svg+xml",<https://assets.allocine.fr/js/website/website-common.6e073e58a9c0143a1763.js>; rel="preload"; as="script",<https://assets.allocine.fr/js/website/moviepage.ddde2d1544b11068d673.js>; rel="preload"; as="script",<https://fr.web.img3.acsta.net/c_310_420/img/5c/9f/5c9fbdb3f7854e322ab8890c10deae7e.jpg>; rel="preload"; as="image"
+Vary: Accept-Encoding,Origin
+Via: 1.1 google
+Alt-Svc: h3=":443"; ma=86400
+Cf-Cache-Status: HIT
+Age: 228
+Last-Modified: Fri, 25 Apr 2025 07:49:16 GMT
+Set-Cookie: __cf_bm=vQovVDpKeIQOYrB5NnQs7pSc4fVUCKigXgk4OQ4ebzg-1745567584-1.0.1.1-KZ7hWR9efQA9UQW_3Q2zp0_qQObQB.C7UUHjrlcsJhLzTpIEBcGlltwkPKFpuwyS4tVIGfREAp_o.fx3TLznKmdrG9PY51d9UB7z2TbuOKw; path=/; expires=Fri, 25-Apr-25 08:23:04 GMT; domain=.allocine.fr; HttpOnly; Secure; SameSite=None
+Server-Timing: cfCacheStatus;desc="HIT"
+Report-To: {"endpoints":[{"url":"https:\/\/a.nel.cloudflare.com\/report\/v4?s=1t9aVZmbDwUQWGVFJwkrOpXbkIHenB%2BjFI0atQySAE2EyE4%2B2IncC5kWekPrnBjWpmKgoVFD3sUm7vEP%2F9pPkiCdYtKKAPLmt9zOZPS%2F5MI%2FQGwh0TuDoRjJINUMlEYXmA%3D%3D"}],"group":"cf-nel","max_age":604800}
+Nel: {"success_fraction":0.01,"report_to":"cf-nel","max_age":604800}
+Server: cloudflare
+Cf-Ray: 935c43bb0f566ee7-CDG
+Content-Encoding: gzip

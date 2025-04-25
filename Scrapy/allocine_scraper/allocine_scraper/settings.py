@@ -70,7 +70,7 @@ DOWNLOADER_MIDDLEWARES = {
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-    "allocine_scraper.pipelines.AllocineScraperPipeline": 300,
+    #"allocine_scraper.pipelines.AllocineScraperPipeline": 300,
     "allocine_scraper.pipelines.ReleaseDatabasePipeline": 300}
 
 # Enable and configure the AutoThrottle extension (disabled by default)
@@ -88,14 +88,14 @@ ITEM_PIPELINES = {
 
 # Enable and configure HTTP caching (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html#httpcache-middleware-settings
-HTTPCACHE_ENABLED = True
+#HTTPCACHE_ENABLED = True
 #HTTPCACHE_EXPIRATION_SECS = 0
-HTTPCACHE_DIR = "httpcache"
+#TTPCACHE_DIR = "httpcache"
 #HTTPCACHE_IGNORE_HTTP_CODES = []
-HTTPCACHE_STORAGE = "scrapy.extensions.httpcache.FilesystemCacheStorage"
+#HTTPCACHE_STORAGE = "scrapy.extensions.httpcache.FilesystemCacheStorage"
 
 # Set settings whose default value is deprecated to a future-proof value
 TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
 FEED_EXPORT_ENCODING = "utf-8"
 
-JOBDIR = 'crawls/myjob'
+#JOBDIR = 'crawls/myjob'
