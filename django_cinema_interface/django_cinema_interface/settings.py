@@ -68,10 +68,21 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'django_cinema_interface.wsgi.application'
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, os.getenv('DATABASE_NAME', 'db.sqlite3')),
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, os.getenv('DATABASE_NAME', 'db.sqlite3')),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'movie_prediction',         # Remplace par le nom de ta base
+        'USER': 'postgres',        # Ton utilisateur PostgreSQL
+        'PASSWORD': '995989',   # Ton mot de passe PostgreSQL
+        'HOST': 'localhost',              # Ou l'adresse de ton serveur
+        'PORT': '5433',                   # Port par défaut PostgreSQL
     }
 }
 
