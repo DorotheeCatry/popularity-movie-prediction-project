@@ -75,14 +75,16 @@ WSGI_APPLICATION = 'django_cinema_interface.wsgi.application'
 #     }
 # }
 
+load_dotenv()
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'movie_prediction',         # Remplace par le nom de ta base
-        'USER': 'postgres',        # Ton utilisateur PostgreSQL
-        'PASSWORD': '995989',   # Ton mot de passe PostgreSQL
-        'HOST': 'localhost',              # Ou l'adresse de ton serveur
-        'PORT': '5433',                   # Port par défaut PostgreSQL
+        'ENGINE': os.getenv("DB_ENGINE"),
+        'NAME': os.getenv("DB_NAME"),
+        'USER': os.getenv("DB_USER"),
+        'PASSWORD': os.getenv("DB_PASSWORD"),
+        'HOST': os.getenv("DB_HOST"),
+        'PORT': os.getenv("DB_PORT"),
     }
 }
 
