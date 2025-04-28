@@ -36,7 +36,7 @@ class AllocineDatabasePipeline:
         spider.logger.info("Connection to the database was successful!")
 
         # Drop existing table and create a new one
-        self.cur.execute("DROP TABLE IF EXISTS allocine_movies")
+        # self.cur.execute("DROP TABLE IF EXISTS allocine_movies")
         
         # Create the table with the specified schema
         self.cur.execute("""
@@ -66,7 +66,6 @@ class AllocineDatabasePipeline:
             trailer_date DATE,
             trailer_views INTEGER,
             trailer_number INTEGER,
-            trailer_url TEXT,
             image_url TEXT
         )
         """)
@@ -148,7 +147,7 @@ class AllocineDatabasePipeline:
         box_office_fr = adapter.get('box_office_fr')
         if box_office_fr:
             box_office_fr = int(box_office_fr.replace(' ', '')) if box_office_fr else None
-         
+        
         box_office_us = adapter.get('box_office_us')
         if box_office_us:
             box_office_us = int(box_office_us.replace(' ', '')) if box_office_us else None
@@ -175,15 +174,10 @@ class AllocineDatabasePipeline:
         if trailer_date:
             trailer_date = parse_date(trailer_date) if trailer_date else None
 
-        trailer_url = adapter.get('trailer_url')
-        if trailer_url:
-            trailer_url = trailer_url.strip() if trailer_url else None
-
         # Handle image_url
         image_url = adapter.get('image_url')
         if image_url:
             image_url = image_url.strip()
-
 
         # Insert data into the database if all values are parsed correctly
         try:
@@ -213,10 +207,9 @@ class AllocineDatabasePipeline:
             trailer_date,
             trailer_views,
             trailer_number,
-            trailer_url,
             image_url
                     )
-                VALUES(%s, %s, %s, %s, %s::text[], %s, %s, %s::text[], %s::text[], %s, %s, %s, %s, %s::text[], %s, %s::text[], %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                VALUES(%s, %s, %s, %s, %s::text[], %s, %s, %s::text[], %s::text[], %s, %s, %s, %s, %s::text[], %s, %s::text[], %s, %s, %s, %s, %s, %s, %s, %s, %s)
             ''', (
             title,
             original_title,
@@ -242,7 +235,6 @@ class AllocineDatabasePipeline:
             trailer_date,
             trailer_views,
             trailer_number,
-            trailer_url,
             image_url
             ))
             self.connection.commit()

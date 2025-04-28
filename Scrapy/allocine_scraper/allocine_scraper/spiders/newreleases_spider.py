@@ -18,7 +18,8 @@ class NewReleaseMovieSpider(CrawlSpider):
     custom_settings = {
         'ITEM_PIPELINES': {
             'allocine_scraper.pipelines.ReleaseDatabasePipeline': 300,
-        }
+        },
+        'JOBDIR': 'crawls/newreleasespider',
     }
 
     rules = (
@@ -277,19 +278,6 @@ class NewReleaseMovieSpider(CrawlSpider):
             if item['trailer_views']:
                 item['trailer_views'] = item['trailer_views'].strip()
             
-            # Get trailer URL
-            try:
-                trailer_iframe = self.driver.find_element(By.CSS_SELECTOR, "iframe[src*='dailymotion']")
-                if trailer_iframe:
-                    iframe_src = trailer_iframe.get_attribute('src')
-                    trailer_url_match = re.search(r'(?P<url>https?://[^\s"\']+)', iframe_src)
-                    if trailer_url_match:
-                        item['trailer_url'] = trailer_url_match.group("url").strip()
-                    else:
-                        item['trailer_url'] = None
-            except Exception as e:
-                self.logger.error(f"Error extracting trailer URL: {e}")
-                item['trailer_url'] = None
             
             # Check for box office data
             header_texts = response.xpath("//div[@class='item-center']/text()").getall()
