@@ -1,10 +1,8 @@
 from dotenv import load_dotenv
 from allocine_scraper.utils import parse_date, convert_to_minutes, safe_int_extraction, parse_brace_string, clean_pg_array_field
-#from Scraping_twitter.config import DB_CONFIG
 from itemadapter import ItemAdapter
 import psycopg2
 import os
-import re
 import logging
 
 # Configure logging
@@ -36,7 +34,7 @@ class AllocineDatabasePipeline:
         spider.logger.info("Connection to the database was successful!")
 
         # Drop existing table and create a new one
-        # self.cur.execute("DROP TABLE IF EXISTS allocine_movies")
+        self.cur.execute("DROP TABLE IF EXISTS allocine_movies")
         
         # Create the table with the specified schema
         self.cur.execute("""

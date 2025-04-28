@@ -3,7 +3,7 @@ from scrapy.spiders import CrawlSpider, Rule
 from scrapy.linkextractors import LinkExtractor
 from allocine_scraper.items import AllocineScraperParsingItem
 
-class AllocineSpider(CrawlSpider):
+class AllocineSpiderTwo(CrawlSpider):
     """
     AllocineSpider is a Scrapy spider designed to scrape movie data from the Allocine website.
     Attributes:
@@ -21,7 +21,7 @@ class AllocineSpider(CrawlSpider):
     Usage:
         This spider is used to scrape detailed movie information and box office data from Allocine. It is configured to store the scraped data using a custom pipeline.
     """
-    name = "allocinespider"
+    name = "xxx"
     allowed_domains = ["allocine.fr"]
     start_urls = ["https://allocine.fr/films/?page=" + str(x) for x in range(1, 8000)]
     custom_settings = {

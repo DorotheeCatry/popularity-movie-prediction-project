@@ -168,8 +168,9 @@ class AllocineSpider(CrawlSpider):
                     return
                 except Exception as e:
                     self.logger.error(f"Error clicking trailer link: {e}")
-            
-            yield item
+            else:
+                self.logger.info("No trailer link found.")
+                yield item
 
         except Exception as e:
             self.logger.error(f"Error in parse_boxoffice: {e}")
@@ -192,22 +193,6 @@ class AllocineSpider(CrawlSpider):
             item['trailer_views'] = response.xpath("//div[contains(@class, 'media-info-item') and contains(@class, 'icon-eye')]/text()").get()
             if item['trailer_views']:
                 item['trailer_views'] = item['trailer_views'].strip()
-                
-            # Get trailer URL
-            try:
-                trailer_iframe = self.driver.find_element(By.XPATH, "//iframe[contains(@src, 'dailymotion')]").get_attribute('src')
-
-                if trailer_iframe:
-                    iframe_src = trailer_iframe.get_attribute('src')
-                    trailer_url_match = re.search(r'(?P<url>https?://[^\s"\']+)', iframe_src)
-                    if trailer_url_match:
-                        item['trailer_url'] = trailer_url_match.group("url").strip()
-                    else:
-                        item['trailer_url'] = None
-                        
-            except Exception as e:
-                self.logger.error(f"Error extracting trailer URL: {e}")
-                item['trailer_url'] = None
 
             yield item
 
