@@ -1,5 +1,5 @@
 from dotenv import load_dotenv
-from allocine_scraper.utils import parse_date, convert_to_minutes, parse_numeric, safe_int_extraction
+from allocine_scraper.utils import parse_date, convert_to_minutes, safe_int_extraction, parse_brace_string, clean_pg_array_field
 #from Scraping_twitter.config import DB_CONFIG
 from itemadapter import ItemAdapter
 import psycopg2
@@ -36,27 +36,37 @@ class AllocineDatabasePipeline:
         spider.logger.info("Connection to the database was successful!")
 
         # Drop existing table and create a new one
+        self.cur.execute("DROP TABLE IF EXISTS allocine_movies")
+        
+        # Create the table with the specified schema
         self.cur.execute("""
-        CREATE TABLE IF NOT EXISTS allocine(
+        CREATE TABLE IF NOT EXISTS allocine_movies(
             id SERIAL PRIMARY KEY,
             title TEXT,
             original_title TEXT,
-            release_date TEXT,
-            duration TEXT,
+            release_date DATE,
+            duration INTEGER,
             genres TEXT[],
             press_rating NUMERIC,
             audience_rating NUMERIC,
-            director TEXT,
-            writer TEXT,
+            director TEXT[],
+            writer TEXT[],
             audience TEXT,
             distributor TEXT,
             movie_type TEXT,
             nationality TEXT[],
-            languages TEXT,
+            languages TEXT[],
             synopsis TEXT,
             actors TEXT[],
             box_office_fr NUMERIC,
+            total_box_office_fr NUMERIC,
             box_office_us NUMERIC,
+            total_box_office_us NUMERIC,
+            showings INTEGER,
+            trailer_date DATE,
+            trailer_views INTEGER,
+            trailer_number INTEGER,
+            trailer_url TEXT,
             image_url TEXT
         )
         """)
@@ -64,9 +74,8 @@ class AllocineDatabasePipeline:
 
     # Process each scraped item and insert into the database
     def process_item(self, item, spider):
-        spider.logger.info(f"Processing item: {item.get('title', 'No title')}")
         adapter = ItemAdapter(item)
-        
+
         # Handle title and original_title
         title = adapter.get('title')
         original_title = adapter.get('original_title')
@@ -75,7 +84,7 @@ class AllocineDatabasePipeline:
         release_date = adapter.get('release_date')
         if release_date:
             release_date = parse_date(release_date)
-        
+
         # Handle duration
         duration = adapter.get('duration')
         if duration:
@@ -93,28 +102,39 @@ class AllocineDatabasePipeline:
         audience_rating = adapter.get('audience_rating')
         if audience_rating:
             audience_rating = float(audience_rating.replace(',', '.')) if audience_rating else None
-        
+
+
         # Handle director and writer
         director = adapter.get('director')
+        if director and isinstance(director, str):
+            director = [parse_brace_string(item) for item in director]
+            director = [item.strip() for sublist in director for item in sublist]
+            
+            
         writer = adapter.get('writer')
+        if writer and isinstance(writer, str):
+            writer = [parse_brace_string(item) for item in writer]
+            writer = [item.strip() for sublist in writer for item in sublist]
 
         # Handle audience and distributor
         audience = adapter.get('audience')
+        
         distributor = adapter.get('distributor')
+        distributor = distributor.strip() if distributor else None
 
         # Handle movie_type
         movie_type = adapter.get('movie_type')
 
         # Handle nationality
         nationality = adapter.get('nationality')
-        if nationality and isinstance(nationality, str):
-            nationality = [nationality.strip().replace('.', '')]
+        if nationality :
+            nationality = clean_pg_array_field(nationality)
 
         # Handle languages
         languages = adapter.get('languages')
-        if languages and isinstance(languages, str):
-            languages = [languages.strip()]
-        
+        if languages :
+            languages = clean_pg_array_field(languages)
+            
         # Handle synopsis
         synopsis = adapter.get('synopsis')
 
@@ -124,77 +144,122 @@ class AllocineDatabasePipeline:
             actors = [actors.strip()]
 
         # Handle box_office_fr and box_office_us
+        
         box_office_fr = adapter.get('box_office_fr')
         if box_office_fr:
             box_office_fr = int(box_office_fr.replace(' ', '')) if box_office_fr else None
+         
         box_office_us = adapter.get('box_office_us')
         if box_office_us:
             box_office_us = int(box_office_us.replace(' ', '')) if box_office_us else None
 
+        total_box_office_fr = adapter.get('total_box_office_fr')
+        if total_box_office_fr and isinstance(total_box_office_fr, str):
+            total_box_office_fr = safe_int_extraction(total_box_office_fr)
+            
+        total_box_office_us = adapter.get('total_box_office_us')
+        if total_box_office_us and isinstance(total_box_office_us, str):
+            total_box_office_us = safe_int_extraction(total_box_office_us)
+
+        
+        showings = adapter.get('showings')
+        trailer_views = adapter.get('trailer_views')
+        trailer_number = adapter.get('trailer_number')
+
+        # Safely extract and convert the values
+        showings = safe_int_extraction(showings)
+        trailer_views = safe_int_extraction(trailer_views)
+        trailer_number = safe_int_extraction(trailer_number)
+        
+        trailer_date = adapter.get('trailer_date')
+        if trailer_date:
+            trailer_date = parse_date(trailer_date) if trailer_date else None
+
+        trailer_url = adapter.get('trailer_url')
+        if trailer_url:
+            trailer_url = trailer_url.strip() if trailer_url else None
+
         # Handle image_url
         image_url = adapter.get('image_url')
         if image_url:
-            image_url = image_url.strip() if image_url else None
+            image_url = image_url.strip()
+
 
         # Insert data into the database if all values are parsed correctly
         try:
             self.cur.execute('''
-                INSERT INTO allocine(
-                    title,
-                    original_title,
-                    release_date,
-                    duration,
-                    genres,
-                    press_rating,
-                    audience_rating,
-                    director,
-                    writer,
-                    audience,
-                    distributor,
-                    movie_type,
-                    nationality,
-                    languages,
-                    synopsis,
-                    actors,
-                    box_office_fr,
-                    box_office_us,
-                    image_url
-                )
-                VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+            INSERT INTO allocine_movies(
+            title,
+            original_title,
+            release_date,
+            duration,
+            genres,
+            press_rating,
+            audience_rating,
+            director,
+            writer,
+            audience,
+            distributor,
+            movie_type,
+            nationality,
+            languages,
+            synopsis,
+            actors,
+            box_office_fr,
+            total_box_office_fr,
+            box_office_us,
+            total_box_office_us,
+            showings,
+            trailer_date,
+            trailer_views,
+            trailer_number,
+            trailer_url,
+            image_url
+                    )
+                VALUES(%s, %s, %s, %s, %s::text[], %s, %s, %s::text[], %s::text[], %s, %s, %s, %s, %s::text[], %s, %s::text[], %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
             ''', (
-                title,
-                original_title,
-                release_date,
-                duration,
-                genres,
-                press_rating,
-                audience_rating,
-                director,
-                writer,
-                audience,
-                distributor,
-                movie_type,
-                nationality,
-                languages,
-                synopsis,
-                actors,
-                box_office_fr,
-                box_office_us,
-                image_url
+            title,
+            original_title,
+            release_date,
+            duration,
+            genres,
+            press_rating,
+            audience_rating,
+            director,
+            writer,
+            audience,
+            distributor,
+            movie_type,
+            nationality,
+            languages,
+            synopsis,
+            actors,
+            box_office_fr,
+            total_box_office_fr,
+            box_office_us,
+            total_box_office_us,
+            showings,
+            trailer_date,
+            trailer_views,
+            trailer_number,
+            trailer_url,
+            image_url
             ))
             self.connection.commit()
+            spider.logger.info(f"Successfully inserted {title} into database")
             return item
 
-        except psycopg2.Error as e:
-            spider.logger.error(f"Error inserting item into database: {e}")
-            self.connection.rollback()  # Rollback the transaction on error
-            return None  # Optionally return None or the item for retry
+        except Exception as e:
+            spider.logger.error(f"Error processing item: {e}")
+            self.connection.rollback()
+            return item
 
-    # Close the spider and database connection
     def close_spider(self, spider):
-        # Close the cursor and the connection
-        self.cur.close()
-        self.connection.close()
+        """Close database connection when spider closes."""
+        if self.connection:
+            self.cur.close()
+            self.connection.close()
+            spider.logger.info("Database connection closed")
 
 class ReleaseDatabasePipeline:
     
@@ -219,19 +284,19 @@ class ReleaseDatabasePipeline:
             genres TEXT[],
             press_rating NUMERIC,
             audience_rating NUMERIC,
-            director TEXT,
-            writer TEXT,
+            director TEXT[],
+            writer TEXT[],
             audience TEXT,
             distributor TEXT,
             movie_type TEXT,
             nationality TEXT[],
-            languages TEXT,
+            languages TEXT[],
             synopsis TEXT,
             actors TEXT[],
             box_office_fr NUMERIC,
             box_office_us NUMERIC,
             showings NUMERIC,
-            trailer_date TEXT,
+            trailer_date DATE,
             trailer_views NUMERIC,
             trailer_number NUMERIC,
             trailer_url TEXT,
@@ -264,7 +329,6 @@ class ReleaseDatabasePipeline:
             genres = [genres.strip()]
 
         # Handle press_rating and audience_rating
-        # Handle press_rating and audience_rating
         press_rating = adapter.get('press_rating')
         if press_rating:
             press_rating = float(press_rating.replace(',', '.')) if press_rating else None
@@ -272,27 +336,38 @@ class ReleaseDatabasePipeline:
         if audience_rating:
             audience_rating = float(audience_rating.replace(',', '.')) if audience_rating else None
 
+
         # Handle director and writer
         director = adapter.get('director')
+        if director and isinstance(director, str):
+            director = [parse_brace_string(item) for item in director]
+            director = [item.strip() for sublist in director for item in sublist]
+            
+            
         writer = adapter.get('writer')
+        if writer and isinstance(writer, str):
+            writer = [parse_brace_string(item) for item in writer]
+            writer = [item.strip() for sublist in writer for item in sublist]
 
         # Handle audience and distributor
         audience = adapter.get('audience')
+        
         distributor = adapter.get('distributor')
+        distributor = distributor.strip() if distributor else None
 
         # Handle movie_type
         movie_type = adapter.get('movie_type')
 
         # Handle nationality
         nationality = adapter.get('nationality')
-        if nationality and isinstance(nationality, str):
-            nationality = [nationality.strip().replace('.', '')]
+        if nationality :
+            nationality = clean_pg_array_field(nationality)
 
         # Handle languages
         languages = adapter.get('languages')
-        if languages and isinstance(languages, str):
-            languages = [languages.strip()]
-
+        if languages :
+            languages = clean_pg_array_field(languages)
+            
         # Handle synopsis
         synopsis = adapter.get('synopsis')
 
@@ -321,7 +396,6 @@ class ReleaseDatabasePipeline:
         trailer_date = adapter.get('trailer_date')
         if trailer_date:
             trailer_date = parse_date(trailer_date) if trailer_date else None
-                    # Showings
 
         trailer_url = adapter.get('trailer_url')
         if trailer_url:
@@ -360,8 +434,8 @@ class ReleaseDatabasePipeline:
                     trailer_number,
                     trailer_url,
                     image_url
-                )
-                VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    )
+                VALUES(%s, %s, %s, %s, %s::text[], %s, %s, %s::text[], %s::text[], %s, %s, %s, %s, %s::text[], %s, %s::text[], %s, %s, %s, %s, %s, %s, %s, %s)
             ''', (
                 title,
                 original_title,

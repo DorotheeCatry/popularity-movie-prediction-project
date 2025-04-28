@@ -2,15 +2,13 @@ import time
 import scrapy
 import re
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 from scrapy.spiders import CrawlSpider, Rule
 from scrapy.linkextractors import LinkExtractor
 from allocine_scraper.items import MovieReleaseScraperParsingItem
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from scrapy.selector import Selector
-from allocine_scraper.utils import parse_date, convert_to_minutes
+from allocine_scraper.utils import parse_date
 
 class NewReleaseMovieSpider(CrawlSpider):
     name = "newreleasespider"
@@ -184,9 +182,16 @@ class NewReleaseMovieSpider(CrawlSpider):
             
             # Other details
             item['audience'] = response.xpath("//div[@class='certificate']/span[@class='certificate-text']/text()").get()
+            item['audience'] = item['audience'].strip() if item['audience'] else None
+            
             item['distributor'] = response.xpath("//section[@class='section ovw ovw-technical']//span[text()='Distributeur']/following-sibling::span/text()").get()
+            item['distributor'] = item['distributor'].strip() if item['distributor'] else None
+            
             item['movie_type'] = response.xpath("//section[@class='section ovw ovw-technical']//span[text()='Type de film']/following-sibling::span/text()").get()
+            item['movie_type'] = item['movie_type'].strip() if item['movie_type'] else None
+            
             item['nationality'] = response.css("div.item span.what.light:contains('Nationalité') + span span.nationality::text").getall()
+            
             item['languages'] = response.xpath("//section[@class='section ovw ovw-technical']//span[text()='Langues']/following-sibling::span/text()").getall()
             
             # Content
@@ -260,7 +265,7 @@ class NewReleaseMovieSpider(CrawlSpider):
             item = response.meta['meta_item']
             
             # Extract trailer information
-            item['trailer_date'] = response.xpath("//div[contains(@class, 'media-info-item') and contains(@class, 'icon-eye')]/text()").get()
+            item['trailer_date'] = response.xpath("//div[contains(@class, 'media-info-item') and contains(@class, 'icon-time')]/text()").get()
             if item['trailer_date']:
                 item['trailer_date'] = item['trailer_date'].strip()
             
@@ -268,7 +273,7 @@ class NewReleaseMovieSpider(CrawlSpider):
             if item['trailer_number']:
                 item['trailer_number'] = item['trailer_number'].strip()
             
-            item['trailer_views'] = response.xpath("//div[contains(@class, 'media-info-item') and contains(@class, 'icon-time')]/text()").get()
+            item['trailer_views'] = response.xpath("//div[contains(@class, 'media-info-item') and contains(@class, 'icon-eye')]/text()").get()
             if item['trailer_views']:
                 item['trailer_views'] = item['trailer_views'].strip()
             

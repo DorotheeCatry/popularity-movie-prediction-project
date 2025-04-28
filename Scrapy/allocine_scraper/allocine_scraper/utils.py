@@ -2,6 +2,7 @@ import dateparser
 import re
 import logging
 
+# Configure logging
 logger = logging.getLogger(__name__)
 
 def parse_date(date_str):
@@ -54,3 +55,40 @@ def safe_int_extraction(value):
             logger.warning(f"Failed to extract number from {value}.")
             return None
     return None
+
+
+def parse_brace_string(s):
+    if not s:
+        return []
+    # If s looks like a '{...}', remove the braces and split
+    if s.startswith('{') and s.endswith('}'):
+        s = s[1:-1]
+    # Then split by comma
+    return [item.strip().strip('"') for item in s.split(',') if item.strip()]
+
+
+def clean_pg_array_field(value):
+    """
+    Clean a field for PostgreSQL array format.
+    Accepts either a list or a string and returns a string in PostgreSQL array syntax.
+    """
+    if isinstance(value, list):
+        # Si c'est déjà une liste, on strippe les éléments et on assemble
+        cleaned_list = [item.strip() for item in value if item and item.strip()]
+    elif isinstance(value, str):
+        # Si c'est une chaîne, on nettoie puis on split
+        cleaned_list = [
+            item.strip() for item in value
+            .replace('{', '')
+            .replace('}', '')
+            .replace('"', '')
+            .replace('\n', '')
+            .split(',')
+            if item.strip()
+        ]
+    else:
+        # Si ce n'est ni une liste ni une string, on renvoie None ou une liste vide selon ton besoin
+        return '{}'
+
+    # Formatage au format PostgreSQL array
+    return '{' + ','.join(cleaned_list) + '}'

@@ -1,4 +1,8 @@
 import random
+from scrapy.utils.project import get_project_settings
+
+settings = get_project_settings()
+
 
 
 # Scrapy settings for allocine_scraper project
@@ -23,7 +27,7 @@ USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTM
 ROBOTSTXT_OBEY = False
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
-CONCURRENT_REQUESTS = 9
+CONCURRENT_REQUESTS = 4
 
 # Configure a delay for requests for the same website (default: 0)
 # See https://docs.scrapy.org/en/latest/topics/settings.html#download-delay
@@ -61,6 +65,34 @@ DOWNLOADER_MIDDLEWARES = {
     'scrapy_user_agents.middlewares.RandomUserAgentMiddleware': 400,
 }
 
+# The download delay setting will honor only one of:
+#CONCURRENT_REQUESTS_PER_DOMAIN = 16
+#CONCURRENT_REQUESTS_PER_IP = 16
+
+# Disable cookies (enabled by default)
+#COOKIES_ENABLED = False
+
+# Disable Telnet Console (enabled by default)
+#TELNETCONSOLE_ENABLED = False
+
+# Override the default request headers:
+#DEFAULT_REQUEST_HEADERS = {
+#    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+#    "Accept-Language": "en",
+#}
+
+# Enable or disable spider middlewares
+# See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
+#SPIDER_MIDDLEWARES = {
+#    "allocine_scraper.middlewares.AllocineScraperSpiderMiddleware": 543,
+#}
+
+# Enable or disable downloader middlewares
+# See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
+# User-Agents rotation + headers réalistes
+DOWNLOADER_MIDDLEWARES = {
+    'scrapy_user_agents.middlewares.RandomUserAgentMiddleware': 400,
+}
 # Enable or disable extensions
 # See https://docs.scrapy.org/en/latest/topics/extensions.html
 #EXTENSIONS = {
@@ -69,9 +101,17 @@ DOWNLOADER_MIDDLEWARES = {
 
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
-ITEM_PIPELINES = {
-    #"allocine_scraper.pipelines.AllocineScraperPipeline": 300,
-    "allocine_scraper.pipelines.ReleaseDatabasePipeline": 300}
+
+if settings.get('SPIDER_NAME') == 'allocinespider':
+    # Active pipeline spécifique
+    ITEM_PIPELINES = {
+        "allocine_scraper.pipelines.AllocineScraperPipeline": 300,
+    }
+elif settings.get('SPIDER_NAME') == 'newreleasespider':
+    # Active un autre pipeline
+    ITEM_PIPELINES = {
+        "allocine_scraper.pipelines.ReleaseDatabasePipeline": 300,
+    }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html
@@ -98,4 +138,5 @@ ITEM_PIPELINES = {
 TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
 FEED_EXPORT_ENCODING = "utf-8"
 
-#JOBDIR = 'crawls/myjob'
+JOBDIR = 'crawls/%(name)s-%(time)s'
+

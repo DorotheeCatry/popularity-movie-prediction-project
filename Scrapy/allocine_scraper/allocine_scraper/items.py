@@ -20,8 +20,17 @@ class AllocineScraperParsingItem(scrapy.Item):
     synopsis = Field()
     actors = Field()
     box_office_fr = Field()
+    total_box_office_fr = Field()
     box_office_us = Field()
+    total_box_office_us = Field()
+    showings = Field()
+    trailer_date = Field()
+    trailer_views = Field()
+    trailer_number = Field()
+    trailer_url = Field()
     image_url = Field()
+    trailer_page_url = Field()
+    box_office_page_url = Field()
 
 class MovieReleaseScraperParsingItem(scrapy.Item):
     title = Field()
@@ -48,6 +57,8 @@ class MovieReleaseScraperParsingItem(scrapy.Item):
     trailer_number = Field()
     trailer_url = Field()
     image_url = Field()
+    trailer_page_url = Field()
+    box_office_page_url = Field()
     
 class MovieSuccessScraperItem(scrapy.Item):
     title = Field()
