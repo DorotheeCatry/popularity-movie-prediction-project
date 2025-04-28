@@ -1,0 +1,10 @@
+SECRET_KEY=UbM9b-65gBr5H8uVxZrJyQyIBlORQ83oGULUaljQXgw
+ALGORITHM=HS256
+ACCESS_TOKEN_EXPIRE_MINUTES=30
+PORT=8001
+DB_USERNAME=adminussba
+DB_PASSWORD=ussba2025RBX
+DB_SERVER=dcatrysqlserver.database.windows.net
+DB_NAME=db_fastapi
+DB_DRIVER="ODBC Driver 18 for SQL Server"
+DATABASE_URL=mssql+pyodbc://adminussba:ussba2025RBX@dcatrysqlserver.database.windows.net:1433/db_fastapi?driver=ODBC+Driver+18+for+SQL+Server

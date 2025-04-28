@@ -1,0 +1,32 @@
+# 💾 Environnements virtuels et dépendances
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# 🔧 Configurations locales et secrets (si jamais)
+.env
+*.sqlite3
+instance/
+
+# 📦 Fichiers de logs et caches
+logs/
+*.log
+*.out
+*.err
+*.pid
+*.gz
+
+# ⚠️ Fichiers de données et modèles ML (🚨 TROP LOURDS POUR GIT)
+*.parquet
+*.csv
+
+# 🚀 Migrations et fichiers temporaires
+migrations
+alembic.ini
+
+# 🐳 Docker et IDE
+docker-compose.override.yml
+.vscode/
+.idea/
