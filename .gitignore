@@ -2,6 +2,7 @@ node_modules/
 logs/*
 !logs/.gitkeep
 !output/.gitkeep
+output/*
 
 # Python specific
 __pycache__/
