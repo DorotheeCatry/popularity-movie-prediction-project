@@ -13,7 +13,7 @@ from .forms import CustomUserCreationForm, CustomUserUpdateForm, CustomPasswordC
 import datetime
 from django.utils import timezone
 from django.db.models import Sum
-from movie_prediction.models import WeeklyProgram, DailyEntry, Room
+from movie_prediction.models import WeeklyProgram, DailyEntry, Room, Movie
 
 class CustomLoginView(LoginView):
     template_name = 'user/login.html'
