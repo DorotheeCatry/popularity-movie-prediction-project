@@ -12,20 +12,28 @@ from django.db.models import F, ExpressionWrapper, FloatField
 from movie_prediction.models import DailyEntry
 # from .ml import load_model, predict
 
+
 class MovieListView(LoginRequiredMixin, generic.ListView):
     model = Movie
     template_name = 'movie_prediction/movie_list.html'
     context_object_name = 'movies'
+
+    def get_queryset(self):
+        # Récupérer les 10 films les mieux classés par box_office_fr
+        return Movie.objects.order_by('-box_office_fr')[:10]
+
 
 class MovieDetailView(LoginRequiredMixin, generic.DetailView):
     model = Movie
     template_name = 'movie_prediction/movie_detail.html'
     context_object_name = 'movie'
 
+
 class ProgramListView(LoginRequiredMixin, generic.ListView):
     model = WeeklyProgram
     template_name = 'movie_prediction/program_list.html'
     context_object_name = 'programs'
+
 
 class ProgramCreateView(LoginRequiredMixin, generic.CreateView):
     model = WeeklyProgram
@@ -33,11 +41,13 @@ class ProgramCreateView(LoginRequiredMixin, generic.CreateView):
     template_name = 'movie_prediction/program_form.html'
     success_url = reverse_lazy('movie_prediction:program_list')
 
+
 class DailyEntryCreateView(LoginRequiredMixin, generic.CreateView):
     model = DailyEntry
     form_class = DailyEntryForm
     template_name = 'movie_prediction/entry_form.html'
     success_url = reverse_lazy('movie_prediction:entry_list')
+
 
 class DailyEntryListView(LoginRequiredMixin, generic.ListView):
     model = DailyEntry
@@ -56,6 +66,7 @@ class DailyEntryListView(LoginRequiredMixin, generic.ListView):
                 )
                 .order_by('-date', 'room__name')
         )
+
 
 @login_required
 def assign_best_films(request):

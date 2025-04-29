@@ -12,8 +12,8 @@
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {% for movie in movies %}
         <div class="bg-gray-900 rounded-lg overflow-hidden border border-[#bae6fd]/20">
-            {% if movie.poster %}
-            <img src="{{ movie.poster }}" alt="{{ movie.title }}" class="w-full h-48 object-cover">
+            {% if movie.image_url %}
+            <img src="{{ movie.image_url }}" alt="{{ movie.title }}" class="w-full h-48 object-cover">
             {% else %}
             <div class="w-full h-48 bg-gray-900 flex items-center justify-center">
                 <i data-lucide="film" class="h-12 w-12 text-[#bae6fd]/50"></i>

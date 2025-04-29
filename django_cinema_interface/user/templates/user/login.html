@@ -1,6 +1,23 @@
 {% extends "base.html" %}
 
 {% block content %}
+<style>
+    .hero-swiper,
+    .swiper-slide,
+    .swiper-slide img {
+        height: 100vh; /* Hauteur de l'écran */
+    }
+
+    .swiper-slide img {
+        object-fit: cover;
+        object-position: center;
+        width: 100%;
+    }
+
+    .swiper-wrapper {
+        height: 100%;
+    }
+</style>
 <div class="flex min-h-screen">
     <!-- Left Half: Slideshow -->
     <div class="hidden md:block w-1/2 relative">

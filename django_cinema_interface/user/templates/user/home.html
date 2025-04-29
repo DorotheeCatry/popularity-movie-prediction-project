@@ -26,11 +26,11 @@
 
             <!-- Updated Block -->
             <div class="overflow-y-auto h-64 space-y-4">
-              {% if programs %}
+              {% comment %} {% if programs %}
                 {% for program in programs %}
                   <div class="flex items-center bg-black-900/50 rounded-lg p-4 border border-[#bae6fd]/20">
-                    {% if program.movie.poster %}
-                      <img src="{{ program.movie.poster }}"
+                    {% if program.movie.image_url %}
+                      <img src="{{ program.movie.image_url }}"
                            alt="{{ program.movie.title }}"
                            class="h-16 w-12 rounded object-cover mr-4" />
                     {% else %}
@@ -55,7 +55,7 @@
                 <div class="text-center py-8">
                   <p class="text-[#bae6fd]">Aucun programme défini</p>
                 </div>
-              {% endif %}
+              {% endif %} {% endcomment %}
             </div>
         </div>
 

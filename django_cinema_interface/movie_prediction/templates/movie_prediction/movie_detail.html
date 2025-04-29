@@ -5,8 +5,8 @@
     <div class="flex flex-col md:flex-row gap-8">
         <!-- Left Column: Poster and Basic Info -->
         <div class="w-full md:w-1/3">
-            {% if movie.poster %}
-            <img src="{{ movie.poster }}" alt="{{ movie.title }}" class="w-full rounded-lg shadow-lg mb-6">
+            {% if movie.image_url %}
+            <img src="{{ movie.image_url }}" alt="{{ movie.title }}" class="w-full rounded-lg shadow-lg mb-6">
             {% else %}
             <div class="w-full h-96 bg-gray-900 rounded-lg flex items-center justify-center mb-6">
                 <i data-lucide="film" class="h-16 w-16 text-[#bae6fd]/50"></i>
@@ -29,11 +29,11 @@
                     </div>
                     <div class="flex items-center text-[#bae6fd]">
                         <i data-lucide="map-pin" class="h-4 w-4 mr-2"></i>
-                        <span>{{ movie.country_production }}</span>
+                        <span>{{ movie.nationality }}</span>
                     </div>
                     <div class="flex items-center text-[#bae6fd]">
                         <i data-lucide="tag" class="h-4 w-4 mr-2"></i>
-                        <span>{{ movie.audience_classification }}</span>
+                        <span>{{ movie.audience }}</span>
                     </div>
                 </div>
             </div>
@@ -55,18 +55,18 @@
                     Réalisateurs
                 </h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {% for director in movie.directors.all %}
+                    {% comment %} {% for person in movie.director.all %} {% endcomment %}
                     <div class="bg-gray-900 p-4 rounded-lg border border-[#bae6fd]/20">
                         <div class="flex items-center justify-between">
-                            <span class="text-[#FBFEF9]">{{ director.name }}</span>
-                            {% if director.average_grade %}
+                            <span class="text-[#FBFEF9]">{{ movie.director }}</span>
+                            {% comment %} {% if director.average_grade %}
                             <span class="text-[#fde68a]">★ {{ director.average_grade|floatformat:1 }}</span>
-                            {% endif %}
+                            {% endif %} {% endcomment %}
                         </div>
                     </div>
-                    {% empty %}
+                    {% comment %} {% empty %}
                     <p class="text-[#bae6fd] col-span-2">Aucun réalisateur enregistré</p>
-                    {% endfor %}
+                    {% endfor %} {% endcomment %}
                 </div>
             </div>
 
@@ -77,18 +77,18 @@
                     Acteurs
                 </h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {% for actor in movie.actors.all %}
+                    {% comment %} {% for actor in movie.actors.all %} {% endcomment %}
                     <div class="bg-gray-900 p-4 rounded-lg border border-[#bae6fd]/20">
                         <div class="flex items-center justify-between">
-                            <span class="text-[#FBFEF9]">{{ actor.name }}</span>
-                            {% if actor.average_grade %}
+                            <span class="text-[#FBFEF9]">{{ movie.actors }}</span>
+                            {% comment %} {% if actor.average_grade %}
                             <span class="text-[#fde68a]">★ {{ actor.average_grade|floatformat:1 }}</span>
-                            {% endif %}
+                            {% endif %} {% endcomment %}
                         </div>
                     </div>
-                    {% empty %}
+                    {% comment %} {% empty %}
                     <p class="text-[#bae6fd] col-span-2">Aucun acteur enregistré</p>
-                    {% endfor %}
+                    {% endfor %} {% endcomment %}
                 </div>
             </div>
 
@@ -99,13 +99,13 @@
                     Genres
                 </h2>
                 <div class="flex flex-wrap gap-2">
-                    {% for genre in movie.genres.all %}
+                    {% comment %} {% for genre in movie.genres.all %} {% endcomment %}
                     <span class="px-3 py-1 bg-[#e11d48]/10 text-[#e11d48] rounded-full text-sm">
-                        {{ genre.type }}
+                        {{ movie.genres }}
                     </span>
-                    {% empty %}
+                    {% comment %} {% empty %}
                     <p class="text-[#bae6fd]">Aucun genre enregistré</p>
-                    {% endfor %}
+                    {% endfor %} {% endcomment %}
                 </div>
             </div>
         </div>
