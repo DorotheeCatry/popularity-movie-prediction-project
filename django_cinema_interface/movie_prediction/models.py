@@ -22,6 +22,37 @@ class Genre(models.Model):
     def __str__(self):
         return self.type
 
+
+
+class Movie(models.Model):
+    title = models.CharField(max_length=255)
+    original_title = models.CharField(max_length=255, blank=True)
+    release_date = models.DateField(null=True, blank=True)
+    duration = models.CharField(max_length=50, blank=True)  # à transformer si possible en int
+    genres = models.JSONField(default=list, blank=True)  # PostgreSQL ARRAY -> JSONField
+    press_rating = models.DecimalField(max_digits=4, decimal_places=2, null=True, blank=True)
+    audience_rating = models.DecimalField(max_digits=4, decimal_places=2, null=True, blank=True)
+    director = models.JSONField(default=list, blank=True)  # PostgreSQL TEXT[] -> JSONField
+    writer = models.JSONField(default=list, blank=True)
+    audience = models.CharField(max_length=255, blank=True)
+    distributor = models.CharField(max_length=255, blank=True)
+    movie_type = models.CharField(max_length=100, blank=True)
+    nationality = models.JSONField(default=list, blank=True)
+    languages = models.JSONField(default=list, blank=True)
+    synopsis = models.TextField(blank=True)
+    actors = models.JSONField(default=list, blank=True)
+    box_office_fr = models.DecimalField(max_digits=15, decimal_places=2, null=True, blank=True)
+    box_office_us = models.DecimalField(max_digits=15, decimal_places=2, null=True, blank=True)
+    showings = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    trailer_date = models.DateField(null=True, blank=True)
+    trailer_views = models.BigIntegerField(null=True, blank=True)
+    trailer_number = models.PositiveIntegerField(null=True, blank=True)
+    trailer_url = models.URLField(blank=True)
+    image_url = models.URLField(blank=True)
+    box_office_fr_pred = models.DecimalField(max_digits=15, decimal_places=2, null=True, blank=True)
+
+    def __str__(self):
+        return self.title
 class Movie(models.Model):
     title = models.CharField(max_length=255)
     duration = models.PositiveIntegerField(help_text="Duration in minutes")
