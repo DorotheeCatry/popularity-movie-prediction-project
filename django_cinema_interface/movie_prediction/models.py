@@ -1,27 +1,38 @@
 from django.db import models
+from django.contrib.postgres.fields import ArrayField
+
 
 class Movie(models.Model):
     title = models.TextField()
     original_title = models.TextField()
     release_date = models.DateField()
-    duration = models.IntegerField()
-    genres = models.JSONField()  # Utilisé pour simuler un tableau de textes
-    press_rating = models.FloatField(null=True, blank=True)
-    audience_rating = models.FloatField(null=True, blank=True)
-    director = models.JSONField()
-    writer = models.JSONField()
+    duration = models.TextField()
+    genres = ArrayField(models.TextField())
+    
+    press_rating = models.DecimalField(max_digits=3, decimal_places=1, null=True, blank=True)
+    audience_rating = models.DecimalField(max_digits=3, decimal_places=1, null=True, blank=True)
+    
+    director = ArrayField(models.TextField())
+    writer = ArrayField(models.TextField())
+    
     audience = models.TextField()
     distributor = models.TextField()
     movie_type = models.TextField()
-    nationality = models.JSONField()
-    languages = models.JSONField()
+    
+    nationality = ArrayField(models.TextField())
+    languages = ArrayField(models.TextField())
     synopsis = models.TextField()
-    actors = models.JSONField()
-    box_office_fr = models.FloatField(null=True, blank=True)
-    box_office_us = models.FloatField(null=True, blank=True)
-    showings = models.FloatField(null=True, blank=True)
-    trailer_date = models.TextField()
-    trailer_views = models.FloatField(null=True, blank=True)
+    actors = ArrayField(models.TextField())
+    
+    box_office_fr = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
+    box_office_fr_pred = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
+    box_office_us = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
+    showings = models.DecimalField(max_digits=10, decimal_places=0, null=True, blank=True)
+    
+    trailer_date = models.DateField(null=True, blank=True)
+    trailer_views = models.DecimalField(max_digits=15, decimal_places=0, null=True, blank=True)
+    trailer_number = models.IntegerField(null=True, blank=True)
+    
     trailer_url = models.TextField()
     image_url = models.TextField()
 
@@ -29,17 +40,17 @@ class Movie(models.Model):
         return self.title
 
 
-class Actor(models.Model):
-    name = models.TextField(null=False, blank=False)
-    mean_entries = models.IntegerField()
+# class Actor(models.Model):
+#     name = models.TextField(null=False, blank=False)
+#     mean_entries = models.IntegerField()
 
 
-class MovieActor(models.Model):
-    movie_in = models.ForeignKey('Movie', on_delete=models.CASCADE)
-    actor_in = models.ForeignKey('Actor', on_delete=models.CASCADE)
-    mean_stars_movies = models.FloatField()
-    movie_count = models.IntegerField()
-    mean_entries = models.IntegerField()
+# class MovieActor(models.Model):
+#     movie_in = models.ForeignKey('Movie', on_delete=models.CASCADE)
+#     actor_in = models.ForeignKey('Actor', on_delete=models.CASCADE)
+#     mean_stars_movies = models.FloatField()
+#     movie_count = models.IntegerField()
+#     mean_entries = models.IntegerField()
 
 
 class Room(models.Model):

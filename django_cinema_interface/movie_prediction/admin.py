@@ -1,8 +1,7 @@
 from django.contrib import admin
-# from .models import (
-#     Director, Actor, Genre, Movie,
-#     Room, WeeklyProgram, DailyEntry
-# )
+from .models import Movie
+
+admin.site.register(Movie)
 
 # @admin.register(Director)
 # class DirectorAdmin(admin.ModelAdmin):

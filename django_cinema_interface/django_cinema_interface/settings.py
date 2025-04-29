@@ -120,11 +120,11 @@ AUTH_USER_MODEL = 'user.User'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
-STATIC_URL = '/static_src/'
+STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 STATICFILES_DIRS = [
-    BASE_DIR / "static_src/",  # Tailwind CSS static files
+    BASE_DIR / "static/",  # Tailwind CSS static files
 ]
 
 # Tailwind specific (you probably already have these)
