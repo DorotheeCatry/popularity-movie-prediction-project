@@ -197,7 +197,7 @@ class HomeView(TemplateView):
         # 5) Prediction increase:
         #    only if you actually have programs *and* some entries today
         if programs.exists() and total_entries:
-            predicted = sum((p.movie.number_entrances_fr or 0) for p in programs)/7
+            predicted = sum((p.movie.box_office_fr or 0) for p in programs)/7
             ctx["prediction_increase"] = round(
                 (predicted - total_entries) / total_entries * 100, 1
             )
