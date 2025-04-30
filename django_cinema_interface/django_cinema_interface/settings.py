@@ -32,7 +32,9 @@ INSTALLED_APPS = [
     "user",
     "movie_prediction",
     "widget_tweaks",
+    "scraping_module",
 ]
+
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -114,14 +116,15 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
 # --- Celery ---
-CELERY_BROKER_URL = 'redis://localhost:6379/0'  # Pour utiliser Redis comme broker
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'django-db'
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = TIME_ZONE
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
 
-CELERY_BEAT_SCHEDULE = {
-    'scrapy-task-every-wednesday': {
-        'task': 'myapp.tasks.run_scrapy_task',
-        'schedule': crontab(minute=0, hour=0, day_of_week=0),  # Chaque mercredi à minuit
-    },
-}
+
+# Scrapy Settings
+SCRAPY_SETTINGS_MODULE = 'scraping_module.allocine_scraper.allocine_scraper.settings'

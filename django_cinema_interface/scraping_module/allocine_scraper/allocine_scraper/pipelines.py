@@ -53,6 +53,7 @@ class ReleaseDatabasePipeline:
             synopsis TEXT,
             actors TEXT[],
             box_office_fr NUMERIC,
+            box_office_fr_pred NUMERIC,
             box_office_us NUMERIC,
             showings NUMERIC,
             trailer_date DATE,
@@ -169,7 +170,7 @@ class ReleaseDatabasePipeline:
         # Insert data into the database if all values are parsed correctly
         try:
             self.cur.execute('''
-                INSERT INTO newrelease(
+                INSERT INTO movie_prediction_movie(
                     title,
                     original_title,
                     release_date,

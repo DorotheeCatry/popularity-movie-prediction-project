@@ -9,8 +9,15 @@ from .models import Movie, WeeklyProgram, DailyEntry, Room
 from .forms import ProgramForm, DailyEntryForm
 from datetime import date, timedelta
 from django.db.models import F, ExpressionWrapper, FloatField
-from movie_prediction.models import DailyEntry
+from django.contrib import messages
+from .tasks import scrape_new_releases
+
 # from .ml import load_model, predict
+
+def trigger_scraping(request):
+    task = scrape_new_releases.delay()
+    messages.success(request, "Scraping task has been initiated")
+    return redirect('movie-list')
 
 
 class MovieListView(LoginRequiredMixin, generic.ListView):

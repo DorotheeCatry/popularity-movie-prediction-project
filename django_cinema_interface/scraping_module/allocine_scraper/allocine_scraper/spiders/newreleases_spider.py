@@ -4,11 +4,11 @@ import re
 from selenium.webdriver.common.by import By
 from scrapy.spiders import CrawlSpider, Rule
 from scrapy.linkextractors import LinkExtractor
-from allocine_scraper.items import MovieReleaseScraperParsingItem
+from ..items import MovieReleaseScraperParsingItem
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from scrapy.selector import Selector
-from allocine_scraper.utils import parse_date
+from ..utils import parse_date
 
 class NewReleaseMovieSpider(CrawlSpider):
     name = "newreleasespider"

@@ -11,4 +11,6 @@ urlpatterns = [
     path('entries/', views.DailyEntryListView.as_view(), name='entry_list'),
     path('entries/add/', views.DailyEntryCreateView.as_view(), name='entry_add'),
     path('programs/assign_best/', views.assign_best_films, name='assign_best'),
+    path('scrape/', views.trigger_scraping, name='trigger-scraping'),
+
 ]
