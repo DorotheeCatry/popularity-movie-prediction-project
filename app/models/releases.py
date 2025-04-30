@@ -38,3 +38,6 @@ class MoviePredictionResponse(SQLModel):
     title: str
     predicted_box_office_fr: float
     success_probability: float
+    
+    
+    
