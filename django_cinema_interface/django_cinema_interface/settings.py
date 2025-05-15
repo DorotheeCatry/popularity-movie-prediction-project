@@ -1,10 +1,6 @@
 from pathlib import Path
 import os
 from dotenv import load_dotenv
-from celery.schedules import crontab
-
-load_dotenv()
-
 
 # Load environment variables
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -29,12 +25,13 @@ INSTALLED_APPS = [
     "tailwind",
     "theme",
     "django_browser_reload",
+    "django_celery_results",
+    "django_celery_beat",
+    "widget_tweaks",
     "user",
     "movie_prediction",
-    "widget_tweaks",
     "scraping_module",
 ]
-
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -66,7 +63,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "django_cinema_interface.wsgi.application"
 
-# --- DATABASE PostgreSQL ---
+# Database configuration
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
@@ -78,7 +75,7 @@ DATABASES = {
     }
 }
 
-# --- Password validation ---
+# Password validation
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
@@ -86,45 +83,43 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
-# --- Internationalization ---
+# Internationalization
 LANGUAGE_CODE = "fr-fr"
-TIME_ZONE = "UTC"
+TIME_ZONE = "Europe/Paris"
 USE_I18N = True
 USE_TZ = True
 
-# --- Static files (CSS, JavaScript, Images) ---
+# Static files configuration
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
-
 STATICFILES_DIRS = [
-    BASE_DIR / "theme/static",  # Tailwind CSS
+    BASE_DIR / "theme/static",
 ]
 
-# --- Tailwind CSS ---
+# Tailwind configuration
 TAILWIND_APP_NAME = "theme"
 TAILWIND_CSS_PATH = "css/dist/styles.css"
+INTERNAL_IPS = ["127.0.0.1"]
 
-# --- Auth ---
+# Authentication configuration
 AUTH_USER_MODEL = "user.User"
 LOGIN_URL = "/user/login/"
 LOGIN_REDIRECT_URL = "/user/home/"
 LOGOUT_REDIRECT_URL = "/user/login/"
 
-# --- Default primary key field type ---
+# Default primary key field type
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-
-
-# --- Celery ---
-CELERY_BROKER_URL = 'redis://localhost:6379/0'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
-CELERY_RESULT_BACKEND = 'django-db'
-CELERY_ACCEPT_CONTENT = ['json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'
+# Celery Configuration
+REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379")
+CELERY_BROKER_URL = REDIS_URL
+CELERY_RESULT_BACKEND = "django-db"
+CELERY_CACHE_BACKEND = "django-cache"
+CELERY_ACCEPT_CONTENT = ["application/json"]
+CELERY_TASK_SERIALIZER = "json"
+CELERY_RESULT_SERIALIZER = "json"
 CELERY_TIMEZONE = TIME_ZONE
-CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
-
+CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 
 # Scrapy Settings
-SCRAPY_SETTINGS_MODULE = 'scraping_module.allocine_scraper.allocine_scraper.settings'
+SCRAPY_SETTINGS_MODULE = "scraping_module.allocine_scraper.allocine_scraper.settings"
