@@ -2,7 +2,7 @@
 ARG PYTHON_VERSION=3.11.8
 FROM python:${PYTHON_VERSION}-slim AS base
 
-# 2. Variables d’environnement utiles
+# 2. Variables d'environnement utiles
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
@@ -35,7 +35,7 @@ RUN apt-get update && apt-get install -y \
     --no-install-recommends && \
     rm -rf /var/lib/apt/lists/*
 
-# 5. Variables d’environnement Selenium
+# 5. Variables d'environnement Selenium
 ENV CHROME_BIN=/usr/bin/chromium
 ENV CHROMEDRIVER_PATH=/usr/lib/chromium/chromedriver
 
@@ -52,16 +52,19 @@ RUN adduser \
 
 # 7. Installer les dépendances Python
 COPY requirements.txt /app/requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
+RUN python -m pip install --no-cache-dir -r requirements.txt
 
-# 8. Passer à l’utilisateur non-root
+# 8. Ajouter le chemin des binaires Python au PATH
+ENV PATH="/usr/local/bin:${PATH}"
+
+# 9. Passer à l'utilisateur non-root
 USER appuser
 
-# 9. Copier le reste du code de l'application
+# 10. Copier le reste du code de l'application
 COPY . /app/
 
-# 10. Exposer le port
+# 11. Exposer le port
 EXPOSE 8000
 
-# 11. Lancer le serveur Django via Gunicorn
+# 12. Lancer le serveur Django via Gunicorn
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
