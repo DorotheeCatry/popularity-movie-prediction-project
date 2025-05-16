@@ -7,7 +7,7 @@ from django.db.models import F, ExpressionWrapper, FloatField, Avg, Count
 from django.contrib import messages
 from django.utils import timezone
 from datetime import timedelta
-from .models import Movie, WeeklyProgram, DailyEntry, Room, Actor, MovieActor
+from .models import Movie, WeeklyProgram, DailyEntry, Room
 from .forms import ProgramForm, DailyEntryForm
 from .tasks import scrape_new_releases
 
@@ -17,13 +17,6 @@ class MovieListView(LoginRequiredMixin, generic.ListView):
     template_name = 'movie_prediction/movie_list.html'
     context_object_name = 'movies'
     paginate_by = 12
-
-    def get_queryset(self):
-        queryset = Movie.objects.all().order_by('-release_date')
-        search = self.request.GET.get('search')
-        if search:
-            queryset = queryset.filter(title__icontains=search)
-        return queryset
 
     def get_queryset(self):
         # Récupérer les 10 films les mieux classés par box_office_fr
