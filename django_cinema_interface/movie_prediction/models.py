@@ -40,17 +40,17 @@ class Movie(models.Model):
         return self.title
 
 
-# class Actor(models.Model):
-#     name = models.TextField(null=False, blank=False)
-#     mean_entries = models.IntegerField()
+class Actor(models.Model):
+    name = models.TextField(null=False, blank=False)
+    mean_entries = models.IntegerField()
 
 
-# class MovieActor(models.Model):
-#     movie_in = models.ForeignKey('Movie', on_delete=models.CASCADE)
-#     actor_in = models.ForeignKey('Actor', on_delete=models.CASCADE)
-#     mean_stars_movies = models.FloatField()
-#     movie_count = models.IntegerField()
-#     mean_entries = models.IntegerField()
+class MovieActor(models.Model):
+    movie_in = models.ForeignKey('Movie', on_delete=models.CASCADE)
+    actor_in = models.ForeignKey('Actor', on_delete=models.CASCADE)
+    mean_stars_movies = models.FloatField()
+    movie_count = models.IntegerField()
+    mean_entries = models.IntegerField()
 
 
 class Room(models.Model):
