@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'django_celery_results',
     'django_celery_beat',
     'scraping_module.apps.ScrapingModuleConfig',
+    'widget_tweaks'
 ]
 
 MIDDLEWARE = [
