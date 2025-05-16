@@ -1,3 +1,1 @@
-```python
 default_app_config = 'scraping_module.apps.ScrapingModuleConfig'
-```

@@ -17,7 +17,7 @@ class NewReleaseMovieSpider(CrawlSpider):
     
     custom_settings = {
         'ITEM_PIPELINES': {
-            'scraping_module.allocine_scraper.pipelines.ReleaseDatabasePipeline': 300,
+            'allocine_scraper.pipelines.ReleaseDatabasePipeline': 300,
         }
     }
 
@@ -28,7 +28,7 @@ class NewReleaseMovieSpider(CrawlSpider):
     def __init__(self, *args, **kwargs):
         super(NewReleaseMovieSpider, self).__init__(*args, **kwargs)
         chrome_options = Options()
-        chrome_options.add_argument("--headless")
+        chrome_options.add_argument("--headless")  # Run in headless mode for servers
         chrome_options.add_argument("--disable-gpu")
         chrome_options.add_argument("--no-sandbox")
         chrome_options.add_argument("--disable-dev-shm-usage")
@@ -36,27 +36,38 @@ class NewReleaseMovieSpider(CrawlSpider):
         chrome_options.add_argument("--disable-ads")
         chrome_options.add_argument("--disable-extensions")
         
+        # Set binary location if needed
         try:
+            # Try to find chromium browser binary
             chrome_options.binary_location = "/usr/bin/chromium-browser"
             self.driver = webdriver.Chrome(options=chrome_options)
         except Exception as e:
             self.logger.error(f"Error initializing Chrome with specified binary location: {e}")
+            # Fallback to default Chrome binary location
             chrome_options.binary_location = ""
             self.driver = webdriver.Chrome(options=chrome_options)
         
         self.logger.info("Chrome WebDriver initialized successfully")
 
     def start_requests(self):
+        """Start the initial requests for the spider."""
         self.logger.info("Starting requests")
         try:
             self.driver.get(self.start_urls[0])
             
+            # Try to dismiss any popups/cookies banners
             try:
-                self.driver.execute_script("document.getElementById('didomi-popup').style.display='none';")
+                self.driver.execute_script("""
+    var popup = document.getElementById('didomi-popup');
+    if (popup) {
+        popup.style.display = 'none';
+    }
+""")
                 self.logger.info("Popup dismissed")
             except Exception as e:
                 self.logger.warning(f"Could not dismiss popup: {e}")
             
+            # Wait for page to load
             time.sleep(2)
             
             yield scrapy.Request(
@@ -68,20 +79,31 @@ class NewReleaseMovieSpider(CrawlSpider):
             self.logger.error(f"Error in start_requests: {e}")
 
     def parse(self, response):
+        """Parse the movie list page."""
         self.logger.info(f"Parsing page: {response.url}")
         
         try:
+            # Get the current page in Selenium
             self.driver.get(response.url)
             
+            # Handle popup if present
             try:
-                self.driver.execute_script("document.getElementById('didomi-popup').style.display='none';")
+                self.driver.execute_script("""
+    var popup = document.getElementById('didomi-popup');
+    if (popup) {
+        popup.style.display = 'none';
+    }
+""")
             except Exception as e:
                 self.logger.warning(f"Error dismissing popup: {e}")
             
+            # Wait for page to load
             time.sleep(2)
             
+            # Get page source
             sel = Selector(text=self.driver.page_source)
             
+            # Get release date
             try:
                 movie_release_element = response.xpath('//select[contains(@class, "dropdown-select-inner")]//option[@selected]/text()').get()
                 if movie_release_element:
@@ -94,6 +116,7 @@ class NewReleaseMovieSpider(CrawlSpider):
                 self.logger.error(f"Error parsing release date: {e}")
                 movie_release = None
             
+            # Extract movie links
             movie_links = sel.xpath("//a[@class='meta-title-link']/@href").getall()
             self.logger.info(f"Found {len(movie_links)} movie links")
             
@@ -104,20 +127,31 @@ class NewReleaseMovieSpider(CrawlSpider):
             self.logger.error(f"Error in parse method: {e}")
 
     def parse_film(self, response):
+        """Parse a single film page."""
         self.logger.info(f"Parsing film: {response.url}")
         
         try:
+            # Load the page in Selenium for JavaScript rendering
             self.driver.get(response.url)
             
+            # Handle popup
             try:
-                self.driver.execute_script("document.getElementById('didomi-popup').style.display='none';")
+                self.driver.execute_script("""
+    var popup = document.getElementById('didomi-popup');
+    if (popup) {
+        popup.style.display = 'none';
+    }
+""")
             except Exception:
                 pass
             
+            # Wait for page to load
             time.sleep(2)
             
+            # Get expected release date from meta
             movie_release = response.meta.get('movie_release')
             
+            # Get actual movie date from page
             try:
                 movie_date_element = response.xpath('//*[contains(@class, "date")]/text()').get()
                 if movie_date_element:
@@ -128,12 +162,15 @@ class NewReleaseMovieSpider(CrawlSpider):
                 self.logger.error(f"Error parsing movie date: {e}")
                 movie_date = None
             
+            # Only process movies matching the release date (if we have both dates)
             if movie_release and movie_date and movie_date != movie_release:
                 self.logger.info(f"Skipping movie with non-matching release date: {movie_date} != {movie_release}")
                 return
             
+            # Create item
             item = MovieReleaseScraperParsingItem()
             
+            # Basic info
             item['title'] = response.xpath("//div[@class='titlebar-title titlebar-title-xl']/text()").get()
             self.logger.info(f"Processing movie: {item['title']}")
             
@@ -149,13 +186,16 @@ class NewReleaseMovieSpider(CrawlSpider):
             
             item['genres'] = response.xpath("//div[contains(@class, 'meta-body-info')]//span[contains(@class, 'dark-grey-link')]/text()").getall()
             
+            # Ratings
             ratings = response.xpath("//div[@class='stareval stareval-small stareval-theme-default']/span[@class='stareval-note']/text()").getall()
             item['press_rating'] = ratings[0] if len(ratings) > 0 else None
             item['audience_rating'] = ratings[1] if len(ratings) > 1 else None
             
+            # Cast & crew
             item['director'] = response.xpath("//div[@class='meta-body-item meta-body-direction meta-body-oneline']/span[normalize-space(text())='De']/following-sibling::span/text()").getall()
             item['writer'] = response.xpath("//div[@class='meta-body-item meta-body-direction meta-body-oneline']/span[normalize-space(text())='Par']/following-sibling::span/text()").getall()
             
+            # Other details
             item['audience'] = response.xpath("//div[@class='certificate']/span[@class='certificate-text']/text()").get()
             item['audience'] = item['audience'].strip() if item['audience'] else None
             
@@ -169,33 +209,47 @@ class NewReleaseMovieSpider(CrawlSpider):
             
             item['languages'] = response.xpath("//section[@class='section ovw ovw-technical']//span[text()='Langues']/following-sibling::span/text()").getall()
             
+            # Content
             item['synopsis'] = response.xpath("//p[@class='bo-p']/text()").get()
             item['actors'] = response.xpath("//div[contains(@class, 'meta-body-item meta-body-actor')]//span[contains(@class, 'dark-grey-link')]/text()").getall()
             
+            # Showing data
             try:
                 showings_element = self.driver.find_element(By.XPATH, "//a[contains(@class, 'button-inverse-full')]//span[contains(@class, 'txt')]")
                 item['showings'] = showings_element.text.strip()
             except Exception:
                 item['showings'] = None
             
+            # Image
             item['image_url'] = response.xpath("//img[@class='thumbnail-img']/@src").get()
             
+            # Check for trailers
             header_texts = response.xpath("//div[@class='item-center']/text()").getall()
             
             if 'Bandes-annonces' in header_texts:
+                # Click on trailer link
                 try:
                     trailer_link = self.driver.find_element(By.XPATH, "//a[contains(@title, 'Bandes-annonces')]")
                     trailer_link.click()
                     
+                    # Handle popup
                     try:
-                        self.driver.execute_script("document.getElementById('didomi-popup').style.display='none';")
+                        self.driver.execute_script("""
+    var popup = document.getElementById('didomi-popup');
+    if (popup) {
+        popup.style.display = 'none';
+    }
+""")
                     except Exception:
                         pass
                     
+                    # Wait for page to load
                     time.sleep(2)
                     
+                    # Get current URL
                     trailer_page_url = self.driver.current_url
                     
+                    # Follow to parse trailer
                     yield scrapy.Request(
                         url=trailer_page_url,
                         callback=self.parse_trailer,
@@ -206,6 +260,7 @@ class NewReleaseMovieSpider(CrawlSpider):
                 except Exception as e:
                     self.logger.error(f"Error clicking trailer link: {e}")
             
+            # Check for box office
             if 'Box Office' in header_texts:
                 box_office_url = response.url.replace('_gen_cfilm=', '-').replace('.html', '/box-office/')
                 yield scrapy.Request(
@@ -216,17 +271,20 @@ class NewReleaseMovieSpider(CrawlSpider):
                 )
                 return
             
+            # If no further pages to scrape, yield the item
             yield item
             
         except Exception as e:
             self.logger.error(f"Error in parse_film: {e}")
 
     def parse_trailer(self, response):
+        """Parse the trailer page."""
         self.logger.info(f"Parsing trailer page: {response.url}")
         
         try:
             item = response.meta['meta_item']
             
+            # Extract trailer information
             item['trailer_date'] = response.xpath("//div[contains(@class, 'media-info-item') and contains(@class, 'icon-time')]/text()").get()
             if item['trailer_date']:
                 item['trailer_date'] = item['trailer_date'].strip()
@@ -239,6 +297,8 @@ class NewReleaseMovieSpider(CrawlSpider):
             if item['trailer_views']:
                 item['trailer_views'] = item['trailer_views'].strip()
             
+            
+            # Check for box office data
             header_texts = response.xpath("//div[@class='item-center']/text()").getall()
             if 'Box Office' in header_texts:
                 box_office_url = response.url.replace('/video/', '/').replace('_gen_cfilm=', '-').replace('.html', '/box-office/')
@@ -250,19 +310,23 @@ class NewReleaseMovieSpider(CrawlSpider):
                 )
                 return
             
+            # If no box office data, yield the item
             yield item
             
         except Exception as e:
             self.logger.error(f"Error in parse_trailer: {e}")
+            # Yield the item to avoid losing data
             if 'meta_item' in response.meta:
                 yield response.meta['meta_item']
 
     def parse_boxoffice(self, response):
+        """Parse the box office page."""
         self.logger.info(f"Parsing box office page: {response.url}")
         
         try:
             item = response.meta['meta_item']
             
+            # Extract box office information
             box_office_fr = response.xpath('//h2[contains(text(), "Box Office France")]/parent::div/following-sibling::table[1]//tr[position() = 1]/td[2]/text()').get()
             if box_office_fr:
                 item['box_office_fr'] = box_office_fr.strip()
@@ -275,10 +339,12 @@ class NewReleaseMovieSpider(CrawlSpider):
             
         except Exception as e:
             self.logger.error(f"Error in parse_boxoffice: {e}")
+            # Yield the item to avoid losing data
             if 'meta_item' in response.meta:
                 yield response.meta['meta_item']
     
     def closed(self, reason):
+        """Close the browser when the spider is closed."""
         self.logger.info(f"Spider closed: {reason}")
         if hasattr(self, 'driver') and self.driver:
             self.driver.quit()
