@@ -19,8 +19,7 @@ class MovieListView(LoginRequiredMixin, generic.ListView):
     paginate_by = 12
 
     def get_queryset(self):
-        # Récupérer les 10 films les mieux classés par box_office_fr
-        return Movie.objects.order_by('-box_office_fr')[:10]
+        return Movie.objects.all().order_by('-release_date')
 
 
 class MovieDetailView(LoginRequiredMixin, generic.DetailView):
@@ -33,6 +32,9 @@ class ProgramListView(LoginRequiredMixin, generic.ListView):
     model = WeeklyProgram
     template_name = 'movie_prediction/program_list.html'
     context_object_name = 'programs'
+
+    def get_queryset(self):
+        return WeeklyProgram.objects.select_related('movie', 'room').order_by('-week_start')
 
 
 class ProgramCreateView(LoginRequiredMixin, generic.CreateView):
@@ -55,9 +57,13 @@ class DailyEntryListView(LoginRequiredMixin, generic.ListView):
     context_object_name = 'entries'
 
     def get_queryset(self):
-        return (DailyEntry.objects
-                .select_related('room')
-                .order_by('-date', 'room__name'))
+        queryset = DailyEntry.objects.select_related('room').order_by('-date', 'room__name')
+        
+        # Calculate fill rate for each entry
+        for entry in queryset:
+            entry.fill_rate = (entry.entrances / entry.room.capacity) * 100
+            
+        return queryset
 
 
 @login_required
@@ -67,36 +73,30 @@ def assign_best_films(request):
     
     # Get upcoming movies with predictions
     upcoming_movies = Movie.objects.filter(
-        release_date__gte=next_wednesday,
-        box_office_fr_pred__isnull=False
-    ).order_by('-box_office_fr_pred')[:2]
+        release_date__gte=next_wednesday
+    ).order_by('-box_office_fr')[:2]
 
     if len(upcoming_movies) < 2:
         messages.warning(request, 'Pas assez de films avec des prédictions disponibles.')
         return redirect('movie_prediction:program_list')
 
     # Get rooms
-    room1 = Room.objects.filter(name='Salle 1').first()
-    room2 = Room.objects.filter(name='Salle 2').first()
-
-    if not (room1 and room2):
+    rooms = Room.objects.all()[:2]
+    if len(rooms) < 2:
         messages.error(request, 'Configuration des salles incorrecte.')
         return redirect('movie_prediction:program_list')
 
     # Create or update programs
-    WeeklyProgram.objects.update_or_create(
-        week_start=next_wednesday,
-        room=room1,
-        defaults={'movie': upcoming_movies[0]}
-    )
-    WeeklyProgram.objects.update_or_create(
-        week_start=next_wednesday,
-        room=room2,
-        defaults={'movie': upcoming_movies[1]}
-    )
+    for room, movie in zip(rooms, upcoming_movies):
+        WeeklyProgram.objects.update_or_create(
+            week_start=next_wednesday,
+            room=room,
+            defaults={'movie': movie}
+        )
 
     messages.success(request, 'Programme automatique créé avec succès.')
     return redirect('movie_prediction:program_list')
+
 
 @login_required
 def trigger_scraping(request):

@@ -21,7 +21,9 @@
             {% endif %}
             <div class="p-4">
                 <h2 class="text-lg font-semibold text-[#FBFEF9] mb-2">{{ movie.title }}</h2>
+                {% if movie.synopsis %}
                 <p class="text-[#bae6fd] text-sm mb-2 line-clamp-2">{{ movie.synopsis }}</p>
+                {% endif %}
                 <div class="flex items-center justify-between mt-4">
                     <div class="flex items-center text-[#bae6fd] text-sm">
                         <i data-lucide="clock" class="h-4 w-4 mr-1"></i>

@@ -27,14 +27,18 @@
                         <i data-lucide="calendar" class="h-4 w-4 mr-2"></i>
                         <span>{{ movie.release_date }}</span>
                     </div>
+                    {% if movie.nationality %}
                     <div class="flex items-center text-[#bae6fd]">
                         <i data-lucide="map-pin" class="h-4 w-4 mr-2"></i>
-                        <span>{{ movie.nationality }}</span>
+                        <span>{{ movie.nationality|join:", " }}</span>
                     </div>
+                    {% endif %}
+                    {% if movie.audience %}
                     <div class="flex items-center text-[#bae6fd]">
                         <i data-lucide="tag" class="h-4 w-4 mr-2"></i>
                         <span>{{ movie.audience }}</span>
                     </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -43,71 +47,67 @@
         <div class="w-full md:w-2/3">
             <h1 class="text-3xl font-bold text-[#FBFEF9] mb-4">{{ movie.title }}</h1>
             
+            {% if movie.synopsis %}
             <div class="mb-6">
                 <h2 class="text-xl font-semibold text-[#FBFEF9] mb-2">Synopsis</h2>
                 <p class="text-[#bae6fd]">{{ movie.synopsis }}</p>
             </div>
+            {% endif %}
 
             <!-- Directors -->
+            {% if movie.director %}
             <div class="mb-6">
                 <h2 class="text-xl font-semibold text-[#FBFEF9] mb-4 flex items-center">
                     <i data-lucide="video" class="h-5 w-5 mr-2 text-[#e11d48]"></i>
                     Réalisateurs
                 </h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {% comment %} {% for person in movie.director.all %} {% endcomment %}
+                    {% for director in movie.director %}
                     <div class="bg-gray-900 p-4 rounded-lg border border-[#bae6fd]/20">
                         <div class="flex items-center justify-between">
-                            <span class="text-[#FBFEF9]">{{ movie.director }}</span>
-                            {% comment %} {% if director.average_grade %}
-                            <span class="text-[#fde68a]">★ {{ director.average_grade|floatformat:1 }}</span>
-                            {% endif %} {% endcomment %}
+                            <span class="text-[#FBFEF9]">{{ director }}</span>
                         </div>
                     </div>
-                    {% comment %} {% empty %}
-                    <p class="text-[#bae6fd] col-span-2">Aucun réalisateur enregistré</p>
-                    {% endfor %} {% endcomment %}
+                    {% endfor %}
                 </div>
             </div>
+            {% endif %}
 
             <!-- Actors -->
+            {% if movie.actors %}
             <div class="mb-6">
                 <h2 class="text-xl font-semibold text-[#FBFEF9] mb-4 flex items-center">
                     <i data-lucide="users" class="h-5 w-5 mr-2 text-[#e11d48]"></i>
                     Acteurs
                 </h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {% comment %} {% for actor in movie.actors.all %} {% endcomment %}
+                    {% for actor in movie.actors %}
                     <div class="bg-gray-900 p-4 rounded-lg border border-[#bae6fd]/20">
                         <div class="flex items-center justify-between">
-                            <span class="text-[#FBFEF9]">{{ movie.actors }}</span>
-                            {% comment %} {% if actor.average_grade %}
-                            <span class="text-[#fde68a]">★ {{ actor.average_grade|floatformat:1 }}</span>
-                            {% endif %} {% endcomment %}
+                            <span class="text-[#FBFEF9]">{{ actor }}</span>
                         </div>
                     </div>
-                    {% comment %} {% empty %}
-                    <p class="text-[#bae6fd] col-span-2">Aucun acteur enregistré</p>
-                    {% endfor %} {% endcomment %}
+                    {% endfor %}
                 </div>
             </div>
+            {% endif %}
 
             <!-- Genres -->
+            {% if movie.genres %}
             <div class="mb-6">
                 <h2 class="text-xl font-semibold text-[#FBFEF9] mb-4 flex items-center">
                     <i data-lucide="tags" class="h-5 w-5 mr-2 text-[#e11d48]"></i>
                     Genres
                 </h2>
                 <div class="flex flex-wrap gap-2">
-                    {% comment %} {% for genre in movie.genres.all %} {% endcomment %}
+                    {% for genre in movie.genres %}
                     <span class="px-3 py-1 bg-[#e11d48]/10 text-[#e11d48] rounded-full text-sm">
-                        {{ movie.genres }}
+                        {{ genre }}
                     </span>
-                    {% comment %} {% empty %}
-                    <p class="text-[#bae6fd]">Aucun genre enregistré</p>
-                    {% endfor %} {% endcomment %}
+                    {% endfor %}
                 </div>
             </div>
+            {% endif %}
         </div>
     </div>
 </div>
