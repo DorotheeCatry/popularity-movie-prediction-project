@@ -17,7 +17,7 @@ sys.path.append(str(SCRAPING_MODULE_PATH))
 
 from scrapy.utils.project import get_project_settings
 from scrapy.crawler import CrawlerProcess
-from scraping_module.allocine_scraper.spiders.newreleases_spider import NewReleaseMovieSpider
+from allocine_scraper.spiders.newreleases_spider import NewReleaseMovieSpider
 
 @shared_task(
     name="scrape_new_releases",
@@ -32,7 +32,7 @@ def scrape_new_releases(self):
     """
     try:
         settings = get_project_settings()
-        settings.setmodule('scraping_module.allocine_scraper.settings')
+        settings.setmodule('allocine_scraper.settings')
         
         process = CrawlerProcess(settings)
         process.crawl(NewReleaseMovieSpider)
