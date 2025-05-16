@@ -21,7 +21,6 @@ def scrape_new_releases(self):
     Returns the number of movies processed.
     """
     try:
-        logger.info("Starting movie scraping task")
         settings = get_project_settings()
         settings.update({
             'ITEM_PIPELINES': {
@@ -29,14 +28,12 @@ def scrape_new_releases(self):
             },
             'SPIDER_MODULES': ['scraping_module.allocine_scraper.spiders'],
             'NEWSPIDER_MODULE': 'scraping_module.allocine_scraper.spiders',
-            'LOG_LEVEL': 'DEBUG'
         })
         
         process = CrawlerProcess(settings)
         process.crawl(NewReleaseMovieSpider)
         process.start()
         
-        logger.info("Scraping completed successfully")
         return "Scraping completed successfully"
     except Exception as e:
         logger.error(f"Error during scraping: {str(e)}")
