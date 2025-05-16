@@ -6,7 +6,6 @@ from scrapy.utils.project import get_project_settings
 from scrapy.crawler import CrawlerProcess
 from scraping_module.allocine_scraper.spiders.newreleases_spider import NewReleaseMovieSpider
 
-# Configure logging
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
