@@ -2,10 +2,18 @@ from celery import shared_task
 from django.utils import timezone
 from datetime import timedelta
 import logging
+import sys
+import os
+from pathlib import Path
+
+# Add scraping_module to Python path
+scraping_path = str(Path(__file__).resolve().parent.parent / 'scraping_module')
+if scraping_path not in sys.path:
+    sys.path.append(scraping_path)
+
 from scrapy.utils.project import get_project_settings
 from scrapy.crawler import CrawlerProcess
-from .models import Movie
-from scraping_module.allocine_scraper.allocine_scraper.spiders.newreleases_spider import NewReleaseMovieSpider
+from allocine_scraper.allocine_scraper.spiders.newreleases_spider import NewReleaseMovieSpider
 
 logger = logging.getLogger(__name__)
 
