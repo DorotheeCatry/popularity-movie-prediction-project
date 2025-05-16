@@ -4,7 +4,7 @@ from django.utils import timezone
 from datetime import timedelta
 from scrapy.utils.project import get_project_settings
 from scrapy.crawler import CrawlerProcess
-from scraping_module.allocine_scraper.spiders.newreleases_spider import NewReleaseMovieSpider
+from movie_prediction.scraping.spiders.allocine_spider import AllocineSpider
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
@@ -13,7 +13,7 @@ logging.basicConfig(level=logging.INFO)
     name="scrape_new_releases",
     bind=True,
     max_retries=3,
-    default_retry_delay=300  # 5 minutes
+    default_retry_delay=300
 )
 def scrape_new_releases(self):
     """
@@ -22,10 +22,8 @@ def scrape_new_releases(self):
     """
     try:
         settings = get_project_settings()
-        settings.setmodule('scraping_module.allocine_scraper.settings')
-        
         process = CrawlerProcess(settings)
-        process.crawl(NewReleaseMovieSpider)
+        process.crawl(AllocineSpider)
         process.start()
         
         return "Scraping completed successfully"
