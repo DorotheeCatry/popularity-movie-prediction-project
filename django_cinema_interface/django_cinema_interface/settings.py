@@ -1,3 +1,4 @@
+```python
 """
 Django settings for django_cinema_interface project.
 """
@@ -32,7 +33,7 @@ INSTALLED_APPS = [
     'movie_prediction',
     'django_celery_results',
     'django_celery_beat',
-    'scraping_module',
+    'scraping_module.apps.ScrapingModuleConfig',
 ]
 
 MIDDLEWARE = [
@@ -138,3 +139,4 @@ TAILWIND_APP_NAME = 'theme'
 INTERNAL_IPS = [
     "127.0.0.1",
 ]
+```
