@@ -10,14 +10,14 @@ from pathlib import Path
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
-# Add scraping_module to Python path
-scraping_path = str(Path(__file__).resolve().parent.parent / 'scraping_module')
-if scraping_path not in sys.path:
-    sys.path.append(scraping_path)
+# Add scraping module to Python path
+BASE_DIR = Path(__file__).resolve().parent.parent
+SCRAPING_MODULE_PATH = BASE_DIR / 'scraping_module'
+sys.path.append(str(SCRAPING_MODULE_PATH))
 
 from scrapy.utils.project import get_project_settings
 from scrapy.crawler import CrawlerProcess
-from scraping_module.allocine_scraper.allocine_scraper.spiders.newreleases_spider import NewReleaseMovieSpider
+from scraping_module.allocine_scraper.spiders.newreleases_spider import NewReleaseMovieSpider
 
 @shared_task(
     name="scrape_new_releases",
@@ -32,13 +32,12 @@ def scrape_new_releases(self):
     """
     try:
         settings = get_project_settings()
-        settings.set('PYTHONPATH', scraping_path)
-        settings.set('ITEM_PIPELINES', {
-            'scraping_module.allocine_scraper.allocine_scraper.pipelines.ReleaseDatabasePipeline': 300,
-        })
+        settings.setmodule('scraping_module.allocine_scraper.settings')
+        
         process = CrawlerProcess(settings)
         process.crawl(NewReleaseMovieSpider)
         process.start()
+        
         return "Scraping completed successfully"
     except Exception as e:
         logger.error(f"Error during scraping: {str(e)}")
