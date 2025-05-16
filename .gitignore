@@ -48,3 +48,17 @@ Thumbs.db
 node_modules/
 package-lock.json
 yarn.lock
+
+__pycache__
+
+# fichiers csv
+movies_1990_1999.csv
+movies_2000_2009.csv
+movies_2010_2019.csv
+movies_2020.csv
+movies_2021.csv
+movies_2022.csv
+movies_2023.csv
+movies_2024.csv
+movies_all.csv
+movies_filter_maj.csv

@@ -44,9 +44,9 @@
                         {{ program.room.name }} ({{ program.room.capacity }} places)
                       </p>
                     </div>
-                    {% if program.movie.number_entrances_fr %}
+                    {% if program.movie.box_office_fr_pred %}
                       <span class="inline-block bg-[#fde68a]/10 text-[#fde68a] px-2 py-1 rounded-full text-xs font-medium">
-                        {{ program.movie.number_entrances_fr }} entrées
+                        {{ program.movie.box_office_fr_pred }} entrées
                       </span>
                     {% endif %}
                   </div>
@@ -103,7 +103,8 @@
                       <p class="text-2xl font-bold flex items-center">
                         {% if prediction_increase > 5 %}
                           <i data-lucide="trending-up" class="h-5 w-5 mr-2 text-[#e11d48]"></i>
-                          <span class="text-[#e11d48]">{{ pct }} % au-dessus</span>
+                          {% comment %} <span class="text-[#e11d48]">{{ pct }} % au-dessus</span> {% endcomment %}
+                          <span class="text-[#e11d48]">Non connu</span>
 
                         {% elif prediction_increase < -5 %}
                           <i data-lucide="trending-down" class="h-5 w-5 mr-2 text-[#34A634]"></i>
@@ -139,11 +140,11 @@
             <i data-lucide="ticket" class="h-4 w-4 mr-2"></i>
             Entrées journalières
         </a>
-        <a href="{% url 'movie_prediction:assign_best' %}" 
+        {% comment %} <a href="{% url 'movie_prediction:assign_best' %}" 
            class="bg-black-900 text-[#FBFEF9] px-6 py-2 rounded-lg hover:bg-black-900/70 transition-colors flex items-center border border-[#bae6fd]/20">
             <i data-lucide="wand-2" class="h-4 w-4 mr-2"></i>
             Suggestion automatique
-        </a>
+        </a> {% endcomment %}
     </div>
 </div>
 {% endblock %}

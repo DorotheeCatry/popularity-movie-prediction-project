@@ -46,8 +46,8 @@
                     <td class="px-6 py-4">
                         <div class="flex items-center">
                             <div class="flex-shrink-0 h-10 w-10">
-                                {% if program.movie.poster %}
-                                <img class="h-10 w-10 rounded-full object-cover" src="{{ program.movie.poster }}" alt="">
+                                {% if program.movie.image_url %}
+                                <img class="h-10 w-10 rounded-full object-cover" src="{{ program.movie.image_url }}" alt="">
                                 {% else %}
                                 <div class="h-10 w-10 rounded-full bg-gray-900 flex items-center justify-center">
                                     <i data-lucide="film" class="h-5 w-5 text-[#bae6fd]"></i>
@@ -56,14 +56,14 @@
                             </div>
                             <div class="ml-4">
                                 <div class="text-sm font-medium text-[#FBFEF9]">{{ program.movie.title }}</div>
-                                <div class="text-sm text-[#bae6fd]">{{ program.movie.duration }} min</div>
+                                <div class="text-sm text-[#bae6fd]">{{ program.movie.duration }}</div>
                             </div>
                         </div>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
-                        {% if program.movie.number_entrances_fr %}
+                        {% if program.movie.box_office_fr_pred %}
                         <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-[#fde68a]/10 text-[#fde68a]">
-                            {{ program.movie.number_entrances_fr }} entrées
+                            {{ program.movie.box_office_fr_pred }} entrées
                         </span>
                         {% else %}
                         <span class="text-[#bae6fd] text-sm">Non disponible</span>

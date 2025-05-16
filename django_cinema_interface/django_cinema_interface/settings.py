@@ -63,6 +63,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "django_cinema_interface.wsgi.application"
 
+<<<<<<< HEAD
 # Database configuration
 DATABASES = {
     "default": {
@@ -72,6 +73,25 @@ DATABASES = {
         "PASSWORD": os.getenv("DB_PASSWORD"),
         "HOST": os.getenv("DB_HOST", "localhost"),
         "PORT": os.getenv("DB_PORT", "5432"),
+=======
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, os.getenv('DATABASE_NAME', 'db.sqlite3')),
+#     }
+# }
+
+load_dotenv()
+
+DATABASES = {
+    'default': {
+        'ENGINE': os.getenv("DB_ENGINE"),
+        'NAME': os.getenv("DB_NAME"),
+        'USER': os.getenv("DB_USER"),
+        'PASSWORD': os.getenv("DB_PASSWORD"),
+        'HOST': os.getenv("DB_HOST"),
+        'PORT': os.getenv("DB_PORT"),
+>>>>>>> 9e9fb0e84f5769cfb8d4a7b103d4a8ad2de35b24
     }
 }
 
@@ -93,7 +113,11 @@ USE_TZ = True
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_DIRS = [
+<<<<<<< HEAD
     BASE_DIR / "theme/static",
+=======
+    BASE_DIR / "static/",  # Tailwind CSS static files
+>>>>>>> 9e9fb0e84f5769cfb8d4a7b103d4a8ad2de35b24
 ]
 
 # Tailwind configuration
@@ -101,6 +125,7 @@ TAILWIND_APP_NAME = "theme"
 TAILWIND_CSS_PATH = "css/dist/styles.css"
 INTERNAL_IPS = ["127.0.0.1"]
 
+<<<<<<< HEAD
 # Authentication configuration
 AUTH_USER_MODEL = "user.User"
 LOGIN_URL = "/user/login/"
@@ -123,3 +148,11 @@ CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 
 # Scrapy Settings
 SCRAPY_SETTINGS_MODULE = "scraping_module.allocine_scraper.allocine_scraper.settings"
+=======
+LOGIN_URL = '/user/login/'
+LOGIN_REDIRECT_URL = '/user/home/'
+LOGOUT_REDIRECT_URL = '/user/login/'
+
+
+NPM_BIN_PATH = "C:/Program Files/nodejs/npm.cmd"
+>>>>>>> 9e9fb0e84f5769cfb8d4a7b103d4a8ad2de35b24
