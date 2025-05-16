@@ -1,4 +1,4 @@
 # This makes the scraping module a proper Python package
-from .allocine_scraper.spiders.allocine_spider import AllocineSpider
+from .allocine_scraper.spiders.newreleases_spider import NewReleaseMovieSpider
 
-__all__ = ['AllocineSpider']
+__all__ = ['NewReleaseMovieSpider']

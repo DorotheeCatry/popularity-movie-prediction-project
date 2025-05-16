@@ -24,8 +24,10 @@ def scrape_new_releases(self):
         settings = get_project_settings()
         settings.update({
             'ITEM_PIPELINES': {
-                'scraping_module.allocine_scraper.allocine_scraper.pipelines.ReleaseDatabasePipeline': 300,
-            }
+                'scraping_module.allocine_scraper.pipelines.ReleaseDatabasePipeline': 300,
+            },
+            'SPIDER_MODULES': ['scraping_module.allocine_scraper.spiders'],
+            'NEWSPIDER_MODULE': 'scraping_module.allocine_scraper.spiders',
         })
         
         process = CrawlerProcess(settings)
