@@ -63,15 +63,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "django_cinema_interface.wsgi.application"
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': os.path.join(BASE_DIR, os.getenv('DATABASE_NAME', 'db.sqlite3')),
-#     }
-# }
-
-load_dotenv()
-
 DATABASES = {
     'default': {
         'ENGINE': os.getenv("DB_ENGINE"),
@@ -101,8 +92,11 @@ USE_TZ = True
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 STATICFILES_DIRS = [
-    BASE_DIR / "static/",  # Tailwind CSS static files
+    BASE_DIR / "static",  # Updated path without trailing slash
 ]
+
+# Create static directory if it doesn't exist
+os.makedirs(BASE_DIR / "static", exist_ok=True)
 
 # Tailwind configuration
 TAILWIND_APP_NAME = "theme"
@@ -113,5 +107,13 @@ LOGIN_URL = '/user/login/'
 LOGIN_REDIRECT_URL = '/user/home/'
 LOGOUT_REDIRECT_URL = '/user/login/'
 
+# Custom user model
+AUTH_USER_MODEL = 'user.User'
 
-NPM_BIN_PATH = "C:/Program Files/nodejs/npm.cmd"
+# Celery Configuration
+CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL', 'redis://localhost:6379/0')
+CELERY_RESULT_BACKEND = 'django-db'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = TIME_ZONE
