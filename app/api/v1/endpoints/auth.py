@@ -3,7 +3,6 @@ from sqlmodel import Session, select
 from app.schemas.user import UserCreate, UserRead, UserUpdate  # Import schemas for user data handling
 from app.schemas.auth import Token, AuthData  # Import schemas for authentication data (Token, AuthData)
 from app.models.users import User  # Import the User model to interact with the database
-from app.db.session import get_session  # Import the session dependency for database interaction
 from app.core.security import get_password_hash, verify_password, get_current_user  # Import security utilities
 from app.core.jwt_handler import create_access_token  # Import the JWT creation utility
 
@@ -33,7 +32,7 @@ def validate_password(password: str):
     
 
 @router.post("/auth/register", response_model=UserRead, status_code=status.HTTP_201_CREATED)
-def register(user: UserCreate, session: Session = Depends(get_session)):
+def register(user: UserCreate, ):
     """
     Register a new user by creating their account with the provided data.
     This function checks if the username or email already exists in the system
@@ -70,7 +69,7 @@ def register(user: UserCreate, session: Session = Depends(get_session)):
 
 
 @router.post("/auth/login", response_model=Token)
-def login(form: AuthData, session: Session = Depends(get_session)):
+def login(form: AuthData, ):
     """
     Login a user by verifying their username and password.
     Upon successful authentication, a JWT token is created and returned.
@@ -104,7 +103,7 @@ def login(form: AuthData, session: Session = Depends(get_session)):
 @router.post("/auth/activate", response_model=dict)
 def activate_account(
     request: UserUpdate,
-    session: Session = Depends(get_session)
+    
 ):
     """
     Activate a user account by setting a new password.
@@ -150,7 +149,7 @@ def activate_account(
 def reset_password(
     request: UserUpdate,  # Contains the new password for the user
     current_user: User = Depends(get_current_user),  # Get the current authenticated user
-    session: Session = Depends(get_session)  # Database session to interact with the database
+      # Database session to interact with the database
 ):
     """
     Reset the password for the current authenticated user.

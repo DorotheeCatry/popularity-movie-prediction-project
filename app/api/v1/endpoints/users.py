@@ -3,7 +3,6 @@ from fastapi.security import OAuth2PasswordBearer
 from sqlmodel import Session, select
 from app.models.users import User
 from app.schemas.user import UserRead, UserCreate
-from app.db.session import get_session
 from app.core.jwt_handler import verify_token
 from app.core.security import get_password_hash, get_current_user
 
@@ -16,7 +15,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/users")
 @router.get("/users/me", response_model=UserRead)
 def read_users_me(
     token: str = Depends(oauth2_scheme),  # Extract token from Authorization header
-    session: Session = Depends(get_session)  # Get the DB session dependency
+      # Get the DB session dependency
 ):
     """
     Endpoint to get the current authenticated user's details using the JWT token.
@@ -54,7 +53,7 @@ def read_users_me(
 
 
 @router.post("/admin/users", response_model=UserRead)
-def create_user(user: UserCreate, session: Session = Depends(get_session)):
+def create_user(user: UserCreate, ):
     """
     Create a new user in the system.
 
@@ -90,7 +89,7 @@ def create_user(user: UserCreate, session: Session = Depends(get_session)):
 
 
 @router.get("/admin/users")
-def get_users(current_user: User = Depends(get_current_user), session: Session = Depends(get_session)):
+def get_users(current_user: User = Depends(get_current_user), ):
     """
     Retrieve the list of all users (admin only).
 

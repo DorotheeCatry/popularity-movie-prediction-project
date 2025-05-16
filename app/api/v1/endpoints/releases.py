@@ -1,7 +1,6 @@
 from fastapi import APIRouter, Depends
 from fastapi.security import OAuth2PasswordBearer
 from app.core.security import get_current_user
-from app.db.session import get_session
 from sqlmodel import Session
 from app.models.users import User
 from app.models.releases import Movie
@@ -21,7 +20,7 @@ request_scheme = OAuth2PasswordBearer(tokenUrl="api/v1/releases/predict")
 def predict_movie_success(
     movies_data: list,  # The movie data to process for prediction.
     token: str = Depends(request_scheme),  # Token used to authenticate the user.
-    session: Session = Depends(get_session)  # Database session to interact with the DB.
+      # Database session to interact with the DB.
 ):
     """
     Submits movie data, predicts the movie's box office success (in France and the US),
