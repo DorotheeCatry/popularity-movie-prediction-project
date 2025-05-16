@@ -6,6 +6,10 @@ import sys
 import os
 from pathlib import Path
 
+# Configure logging
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO)
+
 # Add scraping_module to Python path
 scraping_path = str(Path(__file__).resolve().parent.parent / 'scraping_module')
 if scraping_path not in sys.path:
@@ -14,9 +18,6 @@ if scraping_path not in sys.path:
 from scrapy.utils.project import get_project_settings
 from scrapy.crawler import CrawlerProcess
 from allocine_scraper.allocine_scraper.spiders.newreleases_spider import NewReleaseMovieSpider
-
-logger = logging.getLogger(__name__)
-logging.basicConfig(level=logging.INFO)
 
 @shared_task(
     name="scrape_new_releases",
@@ -31,6 +32,7 @@ def scrape_new_releases(self):
     """
     try:
         settings = get_project_settings()
+        settings.set('PYTHONPATH', scraping_path)
         process = CrawlerProcess(settings)
         process.crawl(NewReleaseMovieSpider)
         process.start()
