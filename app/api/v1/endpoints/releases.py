@@ -1,10 +1,11 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from typing import List, Optional
 import lightgbm
 import pandas as pd
 import joblib
 from datetime import date
+import os
 
 # Define the input model
 class MovieInput(BaseModel):
@@ -35,8 +36,15 @@ class MovieInput(BaseModel):
 
 router = APIRouter()
 
-# Load the pre-trained model
-model = joblib.load("app/utils/boxoffice_model.joblib")
+# Load the pre-trained model with error handling
+try:
+    model_path = os.path.join(os.path.dirname(__file__), "..", "..", "..", "..", "app", "utils", "boxoffice_model.joblib")
+    if not os.path.exists(model_path):
+        raise FileNotFoundError(f"Model file not found at {model_path}")
+    model = joblib.load(model_path)
+except Exception as e:
+    print(f"Error loading model: {str(e)}")
+    model = None
 
 @router.post("/releases/predict")
 def predict_movie_success(movies_data: List[MovieInput]):
@@ -49,6 +57,9 @@ def predict_movie_success(movies_data: List[MovieInput]):
     Returns:
     - Dictionary containing predictions for each movie
     """
+    if model is None:
+        raise HTTPException(status_code=500, detail="Model not loaded properly")
+
     predictions = []
 
     for movie_data in movies_data:
@@ -100,13 +111,16 @@ def predict_movie_success(movies_data: List[MovieInput]):
         df_data["actors"] = df_data["actors"].astype("str")
         df_data["trailer_date"] = pd.to_datetime(df_data["trailer_date"], errors='coerce')
         
-        # Make prediction
-        prediction = model.predict(df_data)
-        
-        # Add to results
-        predictions.append({
-            "title": movie_dict["title"],
-            "predicted_box_office": float(prediction[0])
-        })
+        try:
+            # Make prediction
+            prediction = model.predict(df_data)
+            
+            # Add to results
+            predictions.append({
+                "title": movie_dict["title"],
+                "predicted_box_office": float(prediction[0])
+            })
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Error making prediction: {str(e)}")
     
     return {"predictions": predictions}
