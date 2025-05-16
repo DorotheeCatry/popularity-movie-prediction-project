@@ -2,8 +2,8 @@ import random
 
 BOT_NAME = "allocine_scraper"
 
-SPIDER_MODULES = ["allocine_scraper.spiders"]
-NEWSPIDER_MODULE = "allocine_scraper.spiders"
+SPIDER_MODULES = ["scraping_module.allocine_scraper.allocine_scraper.spiders"]
+NEWSPIDER_MODULE = "scraping_module.allocine_scraper.allocine_scraper.spiders"
 
 LOG_LEVEL = 'DEBUG'
 
