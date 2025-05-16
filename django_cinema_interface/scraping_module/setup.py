@@ -11,6 +11,9 @@ setup(
         'django',
         'selenium',
         'webdriver_manager',
+        'dateparser',
+        'fake-useragent',
+        'scrapy-user-agents',
     ],
     entry_points={
         'scrapy': ['settings = allocine_scraper.settings']
