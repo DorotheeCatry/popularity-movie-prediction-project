@@ -1,3 +1,1 @@
-from .spiders.allocine_spider import AllocineSpider
-
-__all__ = ['AllocineSpider']
+# This file should be empty since we're using the main scraping_module
