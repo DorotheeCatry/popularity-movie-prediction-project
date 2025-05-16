@@ -1,12 +1,10 @@
-# This makes the allocine_scraper a proper Python package
-from .spiders.newreleases_spider import NewReleaseMovieSpider
-from .items import AllocineScraperParsingItem, MovieReleaseScraperParsingItem, MovieSuccessScraperItem
+"""
+Allocine scraper module initialization
+"""
+from .items import MovieReleaseScraperParsingItem
 from .pipelines import ReleaseDatabasePipeline
 
 __all__ = [
-    'NewReleaseMovieSpider',
-    'AllocineScraperParsingItem',
     'MovieReleaseScraperParsingItem',
-    'MovieSuccessScraperItem',
     'ReleaseDatabasePipeline'
 ]
