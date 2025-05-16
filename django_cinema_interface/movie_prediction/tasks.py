@@ -4,7 +4,7 @@ from django.utils import timezone
 from datetime import timedelta
 from scrapy.utils.project import get_project_settings
 from scrapy.crawler import CrawlerProcess
-from scraping_module.allocine_scraper.spiders.allocine_spider import AllocineSpider
+from scraping_module.allocine_scraper.spiders.newreleases_spider import NewReleaseMovieSpider
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
@@ -22,8 +22,14 @@ def scrape_new_releases(self):
     """
     try:
         settings = get_project_settings()
+        settings.update({
+            'ITEM_PIPELINES': {
+                'scraping_module.allocine_scraper.allocine_scraper.pipelines.ReleaseDatabasePipeline': 300,
+            }
+        })
+        
         process = CrawlerProcess(settings)
-        process.crawl(AllocineSpider)
+        process.crawl(NewReleaseMovieSpider)
         process.start()
         
         return "Scraping completed successfully"
