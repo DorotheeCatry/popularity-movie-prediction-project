@@ -4,7 +4,7 @@ from django.utils import timezone
 from datetime import timedelta
 from scrapy.utils.project import get_project_settings
 from scrapy.crawler import CrawlerProcess
-from scraping_module import AllocineSpider
+from scraping_module.allocine_scraper.spiders.allocine_spider import AllocineSpider
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
