@@ -35,25 +35,12 @@ class MovieDetailView(LoginRequiredMixin, generic.DetailView):
     template_name = 'movie_prediction/movie_detail.html'
     context_object_name = 'movie'
 
-<<<<<<< HEAD
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        movie = self.get_object()
-        context['actors'] = MovieActor.objects.filter(movie_in=movie).select_related('actor_in')
-        return context
-=======
->>>>>>> 9e9fb0e84f5769cfb8d4a7b103d4a8ad2de35b24
 
 class ProgramListView(LoginRequiredMixin, generic.ListView):
     model = WeeklyProgram
     template_name = 'movie_prediction/program_list.html'
     context_object_name = 'programs'
 
-<<<<<<< HEAD
-    def get_queryset(self):
-        return WeeklyProgram.objects.select_related('room', 'movie').order_by('-week_start', 'room')
-=======
->>>>>>> 9e9fb0e84f5769cfb8d4a7b103d4a8ad2de35b24
 
 class ProgramCreateView(LoginRequiredMixin, generic.CreateView):
     model = WeeklyProgram
@@ -61,12 +48,6 @@ class ProgramCreateView(LoginRequiredMixin, generic.CreateView):
     template_name = 'movie_prediction/program_form.html'
     success_url = reverse_lazy('movie_prediction:program_list')
 
-<<<<<<< HEAD
-    def form_valid(self, form):
-        messages.success(self.request, 'Programme ajouté avec succès.')
-        return super().form_valid(form)
-=======
->>>>>>> 9e9fb0e84f5769cfb8d4a7b103d4a8ad2de35b24
 
 class DailyEntryCreateView(LoginRequiredMixin, generic.CreateView):
     model = DailyEntry
@@ -74,12 +55,6 @@ class DailyEntryCreateView(LoginRequiredMixin, generic.CreateView):
     template_name = 'movie_prediction/entry_form.html'
     success_url = reverse_lazy('movie_prediction:entry_list')
 
-<<<<<<< HEAD
-    def form_valid(self, form):
-        messages.success(self.request, 'Entrées enregistrées avec succès.')
-        return super().form_valid(form)
-=======
->>>>>>> 9e9fb0e84f5769cfb8d4a7b103d4a8ad2de35b24
 
 class DailyEntryListView(LoginRequiredMixin, generic.ListView):
     model = DailyEntry
