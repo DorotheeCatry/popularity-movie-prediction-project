@@ -2,8 +2,8 @@ import random
 
 BOT_NAME = "allocine_scraper"
 
-SPIDER_MODULES = ["allocine_scraper.spiders"]
-NEWSPIDER_MODULE = "allocine_scraper.spiders"
+SPIDER_MODULES = ["scraping_module.allocine_scraper.spiders"]
+NEWSPIDER_MODULE = "scraping_module.allocine_scraper.spiders"
 
 LOG_LEVEL = 'DEBUG'
 
@@ -29,7 +29,7 @@ DOWNLOADER_MIDDLEWARES = {
 
 # Configure item pipelines
 ITEM_PIPELINES = {
-    'allocine_scraper.pipelines.ReleaseDatabasePipeline': 300,
+    'scraping_module.allocine_scraper.pipelines.ReleaseDatabasePipeline': 300,
 }
 
 # Set settings whose default value is deprecated to a future-proof value

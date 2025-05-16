@@ -1,0 +1,1 @@
+# This makes the scraping module a proper Python package
