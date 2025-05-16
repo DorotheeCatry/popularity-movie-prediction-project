@@ -1,3 +1,4 @@
+from celery import shared_task
 from django.utils import timezone
 from datetime import timedelta
 import logging
@@ -15,6 +16,7 @@ from scrapy.crawler import CrawlerProcess
 from allocine_scraper.allocine_scraper.spiders.newreleases_spider import NewReleaseMovieSpider
 
 logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO)
 
 @shared_task(
     name="scrape_new_releases",
