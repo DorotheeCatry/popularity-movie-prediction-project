@@ -1,10 +1,9 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='allocine_scraper',
+    name='scraping_module',
     version='1.0',
     packages=find_packages(),
-    package_dir={'': '.'},
     install_requires=[
         'scrapy>=2.12.0',
         'psycopg2-binary>=2.9.10',
@@ -17,7 +16,4 @@ setup(
         'scrapy-user-agents>=0.1.1',
     ],
     python_requires='>=3.8',
-    entry_points={
-        'scrapy': ['settings = allocine_scraper.settings']
-    }
 )

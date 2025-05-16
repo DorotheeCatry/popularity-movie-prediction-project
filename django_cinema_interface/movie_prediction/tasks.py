@@ -4,7 +4,7 @@ from datetime import timedelta
 import logging
 from scrapy.utils.project import get_project_settings
 from scrapy.crawler import CrawlerProcess
-from scraping_module.allocine_scraper.spiders.newreleases_spider import NewReleaseMovieSpider
+from scraping_module.allocine_scraper import NewReleaseMovieSpider
 
 # Configure logging
 logger = logging.getLogger(__name__)
