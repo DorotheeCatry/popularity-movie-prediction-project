@@ -12,10 +12,10 @@ app = FastAPI(
     ]
 )
 
-# Configure CORS
+# Configure CORS to allow requests from your Django application
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allow all origins
+    allow_origins=["*"],  # Allow all origins for development
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
