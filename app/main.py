@@ -1,5 +1,6 @@
 from fastapi import FastAPI
-from app.routers import predictions
+from fastapi.middleware.cors import CORSMiddleware
+from app.api.v1.endpoints import auth, users, releases
 
 app = FastAPI(
     title="Movie Box Office Prediction API",
@@ -7,9 +8,26 @@ app = FastAPI(
     docs_url="/docs",
     redoc_url="/redoc",
     openapi_tags=[
+        {"name": "auth", "description": "Authentication endpoints"},
+        {"name": "users", "description": "User management endpoints"},
         {"name": "predictions", "description": "Movie prediction endpoints"}
     ]
 )
 
+# Configure CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:8000"],  # Django development server
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 # Include routers
-app.include_router(predictions.router, prefix="/api/v1", tags=["predictions"])
+app.include_router(auth.router, prefix="/api/v1", tags=["auth"])
+app.include_router(users.router, prefix="/api/v1", tags=["users"])
+app.include_router(releases.router, prefix="/api/v1", tags=["predictions"])
+
+@app.get("/")
+async def root():
+    return {"message": "Welcome to the Movie Box Office Prediction API"}
