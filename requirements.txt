@@ -29,8 +29,10 @@ decorator
 defusedxml
 Django
 django-browser-reload
+django-cors-headers
 django-tailwind
 django-widget-tweaks
+djangorestframework
 executing
 fake-useragent
 fastjsonschema
