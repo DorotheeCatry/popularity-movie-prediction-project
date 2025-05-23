@@ -52,7 +52,7 @@ except Exception as e:
     model = None
 
 @router.post("/releases/predict", response_model=List[PredictionResponse])
-def predict_movie_success(movies_data: List[MovieInput]):
+async def predict_movie_success(movies_data: List[MovieInput]):
     """
     Predicts box office performance for a list of movies.
     
@@ -63,73 +63,80 @@ def predict_movie_success(movies_data: List[MovieInput]):
     - List of predictions with success probability
     """
     if model is None:
-        raise HTTPException(status_code=500, detail="Model not loaded properly")
+        raise HTTPException(
+            status_code=500,
+            detail="Model not loaded properly. Please check server logs."
+        )
 
-    predictions = []
+    try:
+        predictions = []
 
-    for movie_data in movies_data:
-        # Convert movie data to dictionary
-        movie_dict = movie_data.dict()
-        
-        # Prepare features
-        movie_features = {
-            "title": [movie_dict["title"]],
-            "original_title": [movie_dict["original_title"]],
-            "release_date": [movie_dict["release_date"]],
-            "duration": [movie_dict["duration"]],
-            "genres": [",".join(movie_dict["genres"])],
-            "press_rating": [movie_dict["press_rating"]],
-            "audience_rating": [movie_dict["audience_rating"]],
-            "director": [",".join(movie_dict["director"])],
-            "writer": [",".join(movie_dict["writer"])],
-            "audience": [movie_dict["audience"]],
-            "distributor": [movie_dict["distributor"]],
-            "movie_type": [movie_dict["movie_type"]],
-            "nationality": [",".join(movie_dict["nationality"])],
-            "languages": [",".join(movie_dict["languages"])],
-            "synopsis": [movie_dict["synopsis"]],
-            "actors": [",".join(movie_dict["actors"])],
-            "box_office_fr": [movie_dict["box_office_fr"]],
-            "box_office_us": [movie_dict["box_office_us"]],
-            "showings": [movie_dict["showings"]],
-            "trailer_date": [movie_dict["trailer_date"]],
-            "trailer_views": [movie_dict["trailer_views"]],
-            "trailer_number": [movie_dict["trailer_number"]],
-            "trailer_url": [movie_dict["trailer_url"]],
-            "image_url": [movie_dict["image_url"]]
-        }
+        for movie_data in movies_data:
+            # Convert movie data to dictionary
+            movie_dict = movie_data.dict()
+            
+            # Prepare features
+            movie_features = {
+                "title": [movie_dict["title"]],
+                "original_title": [movie_dict["original_title"] or ""],
+                "release_date": [movie_dict["release_date"]],
+                "duration": [movie_dict["duration"] or ""],
+                "genres": [",".join(movie_dict["genres"])],
+                "press_rating": [movie_dict["press_rating"] or 0.0],
+                "audience_rating": [movie_dict["audience_rating"] or 0.0],
+                "director": [",".join(movie_dict["director"])],
+                "writer": [",".join(movie_dict["writer"])],
+                "audience": [movie_dict["audience"] or ""],
+                "distributor": [movie_dict["distributor"] or ""],
+                "movie_type": [movie_dict["movie_type"] or ""],
+                "nationality": [",".join(movie_dict["nationality"])],
+                "languages": [",".join(movie_dict["languages"])],
+                "synopsis": [movie_dict["synopsis"] or ""],
+                "actors": [",".join(movie_dict["actors"])],
+                "box_office_fr": [movie_dict["box_office_fr"] or 0.0],
+                "box_office_us": [movie_dict["box_office_us"] or 0.0],
+                "showings": [movie_dict["showings"] or 0],
+                "trailer_date": [movie_dict["trailer_date"]],
+                "trailer_views": [movie_dict["trailer_views"] or 0],
+                "trailer_number": [movie_dict["trailer_number"] or 0],
+                "trailer_url": [movie_dict["trailer_url"] or ""],
+                "image_url": [movie_dict["image_url"] or ""]
+            }
 
-        # Create DataFrame
-        df_data = pd.DataFrame(movie_features)
-        
-        # Convert data types
-        df_data["release_date"] = pd.to_datetime(df_data["release_date"], errors='coerce')
-        df_data["duration"] = df_data["duration"].astype("str")
-        df_data["genres"] = df_data["genres"].astype("str")
-        df_data["director"] = df_data["director"].astype("str")
-        df_data["writer"] = df_data["writer"].astype("str")
-        df_data["audience"] = df_data["audience"].astype("str")
-        df_data["distributor"] = df_data["distributor"].astype("str")
-        df_data["movie_type"] = df_data["movie_type"].astype("str")
-        df_data["nationality"] = df_data["nationality"].astype("str")
-        df_data["languages"] = df_data["languages"].astype("str")
-        df_data["actors"] = df_data["actors"].astype("str")
-        df_data["trailer_date"] = pd.to_datetime(df_data["trailer_date"], errors='coerce')
-        
-        try:
+            # Create DataFrame
+            df_data = pd.DataFrame(movie_features)
+            
+            # Convert data types
+            df_data["release_date"] = pd.to_datetime(df_data["release_date"], errors='coerce')
+            df_data["duration"] = df_data["duration"].astype("str")
+            df_data["genres"] = df_data["genres"].astype("str")
+            df_data["director"] = df_data["director"].astype("str")
+            df_data["writer"] = df_data["writer"].astype("str")
+            df_data["audience"] = df_data["audience"].astype("str")
+            df_data["distributor"] = df_data["distributor"].astype("str")
+            df_data["movie_type"] = df_data["movie_type"].astype("str")
+            df_data["nationality"] = df_data["nationality"].astype("str")
+            df_data["languages"] = df_data["languages"].astype("str")
+            df_data["actors"] = df_data["actors"].astype("str")
+            df_data["trailer_date"] = pd.to_datetime(df_data["trailer_date"], errors='coerce')
+            
             # Make prediction
             prediction = model.predict(df_data)
             
-            # Calculate success probability (simplified example)
+            # Calculate success probability (based on predicted box office)
+            # Normalize to a 0-100 scale based on box office performance
             success_probability = min(max(prediction[0] / 1000000, 0), 1) * 100
             
-            # Add to results
             predictions.append(PredictionResponse(
                 title=movie_dict["title"],
                 predicted_box_office=float(prediction[0]),
                 success_probability=float(success_probability)
             ))
-        except Exception as e:
-            raise HTTPException(status_code=500, detail=f"Error making prediction: {str(e)}")
+
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error processing prediction: {str(e)}"
+        )
     
     return predictions
