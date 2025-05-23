@@ -1,5 +1,5 @@
 from dotenv import load_dotenv
-from allocine_scraper.utils import parse_date, convert_to_minutes, safe_int_extraction, parse_brace_string, clean_pg_array_field
+from scraping_module.allocine_scraper.utils import parse_date, convert_to_minutes, safe_int_extraction, parse_brace_string, clean_pg_array_field
 from itemadapter import ItemAdapter
 import psycopg2
 import os
