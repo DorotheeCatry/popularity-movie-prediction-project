@@ -12,16 +12,16 @@ app = FastAPI(
     ]
 )
 
-# Configure CORS to allow requests from your Django application
+# Configure CORS to allow requests from Django application
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allow all origins
+    allow_origins=["http://localhost:8000", "http://127.0.0.1:8000"],  # Django development server
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Include only the predictions router
+# Include the predictions router
 app.include_router(releases.router, prefix="/api/v1", tags=["predictions"])
 
 @app.get("/")

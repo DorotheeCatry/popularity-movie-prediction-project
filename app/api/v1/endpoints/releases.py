@@ -34,6 +34,11 @@ class MovieInput(BaseModel):
     trailer_url: Optional[str] = None
     image_url: Optional[str] = None
 
+class PredictionResponse(BaseModel):
+    title: str
+    predicted_box_office: float
+    success_probability: float
+
 router = APIRouter()
 
 # Load the pre-trained model with error handling
@@ -46,7 +51,7 @@ except Exception as e:
     print(f"Error loading model: {str(e)}")
     model = None
 
-@router.post("/releases/predict")
+@router.post("/releases/predict", response_model=List[PredictionResponse])
 def predict_movie_success(movies_data: List[MovieInput]):
     """
     Predicts box office performance for a list of movies.
@@ -55,7 +60,7 @@ def predict_movie_success(movies_data: List[MovieInput]):
     - movies_data: List of movies with their features
     
     Returns:
-    - Dictionary containing predictions for each movie
+    - List of predictions with success probability
     """
     if model is None:
         raise HTTPException(status_code=500, detail="Model not loaded properly")
@@ -115,12 +120,16 @@ def predict_movie_success(movies_data: List[MovieInput]):
             # Make prediction
             prediction = model.predict(df_data)
             
+            # Calculate success probability (simplified example)
+            success_probability = min(max(prediction[0] / 1000000, 0), 1) * 100
+            
             # Add to results
-            predictions.append({
-                "title": movie_dict["title"],
-                "predicted_box_office": float(prediction[0])
-            })
+            predictions.append(PredictionResponse(
+                title=movie_dict["title"],
+                predicted_box_office=float(prediction[0]),
+                success_probability=float(success_probability)
+            ))
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"Error making prediction: {str(e)}")
     
-    return {"predictions": predictions}
+    return predictions
