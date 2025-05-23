@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold mb-8">Movies</h1>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for item in movies_with_predictions %}
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                {% if item.movie.image_url %}
+                    <img src="{{ item.movie.image_url }}" alt="{{ item.movie.title }}" class="w-full h-48 object-cover">
+                {% endif %}
+                
+                <div class="p-6">
+                    <h2 class="text-xl font-semibold mb-2">{{ item.movie.title }}</h2>
+                    
+                    {% if item.movie.release_date %}
+                        <p class="text-gray-600 mb-2">Release Date: {{ item.movie.release_date }}</p>
+                    {% endif %}
+                    
+                    <div class="mt-4">
+                        <h3 class="font-semibold text-lg mb-2">Predictions</h3>
+                        <p class="text-gray-700">
+                            Predicted Box Office: €{{ item.prediction.predicted_box_office|floatformat:2 }}
+                        </p>
+                        <p class="text-gray-700">
+                            Success Probability: {{ item.prediction.success_probability|floatformat:1 }}%
+                        </p>
+                    </div>
+                    
+                    <a href="{% url 'movie-detail' item.movie.pk %}" 
+                       class="mt-4 inline-block bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                        View Details
+                    </a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
